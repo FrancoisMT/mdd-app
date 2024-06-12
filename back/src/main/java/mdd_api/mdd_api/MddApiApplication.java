@@ -2,9 +2,8 @@ package mdd_api.mdd_api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
+@SpringBootApplication
 public class MddApiApplication {
 
 	public static void main(String[] args) {
