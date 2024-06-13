@@ -11,5 +11,6 @@ import mdd_api.mdd_api.entities.User;
 public interface UserRepository extends JpaRepository<User, Long> {
 
 	Optional<User> findByMail(String mail);
+	boolean existsByMail(String mail);
 	
 }
