@@ -33,7 +33,9 @@ public class SpringSecurityConfig {
 	                .csrf(csrf -> csrf.disable())
 	                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 	                .authorizeHttpRequests(auth -> auth
-	                    .requestMatchers("/abcd").permitAll() 
+	                    .requestMatchers(
+	                    		 "/swagger-ui/*", "/v3/api-docs", "/v3/api-docs/*",
+	                    		"/auth/register", "/auth/login").permitAll() 
 	                    .anyRequest().authenticated()) 
 	                .exceptionHandling(e -> e
 	                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))

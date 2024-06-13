@@ -39,7 +39,7 @@ public class User implements UserDetails {
 	@NotNull(message = "username cannot be NULL")
     @Column(nullable = false)
 	@Size(max=50)
-    private String username;    
+    private String name;    
 
 	@NotNull(message = "password cannot be NULL")
 	@Column(nullable = false)
