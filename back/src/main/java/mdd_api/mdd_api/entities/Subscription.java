@@ -1,6 +1,8 @@
 package mdd_api.mdd_api.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,6 +15,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name="subscriptions")
+@JsonIgnoreProperties({"user"})
 public class Subscription {
 
 	@Id
@@ -27,5 +30,7 @@ public class Subscription {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 	
+	public Subscription() {}
 	
+		
 }

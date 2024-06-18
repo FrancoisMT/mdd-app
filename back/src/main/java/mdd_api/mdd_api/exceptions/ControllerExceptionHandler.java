@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 
@@ -80,6 +81,12 @@ public class ControllerExceptionHandler {
 	        return ResponseEntity
 	                .status(ex.getHttpStatus()) 
 	                .body(response);
+	 }
+	 
+	 @ExceptionHandler(ExpiredJwtException.class)
+	 public ResponseEntity<String> handleExpiredJwtException(ExpiredJwtException ex) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                             .body("Token has expired.");
 	 }
 
 	 
