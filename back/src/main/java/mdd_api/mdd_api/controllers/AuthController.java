@@ -78,6 +78,7 @@ public class AuthController {
 				 authenticatedUser.getId(),
 				 authenticatedUser.getUsername(),
 				 authenticatedUser.getMail(),
+				 
 				 jwtToken
 		));
 		 
@@ -111,6 +112,5 @@ public class AuthController {
 		)); 
 
 	 }
-	 
-	 	 
+	 	 	 
 }
