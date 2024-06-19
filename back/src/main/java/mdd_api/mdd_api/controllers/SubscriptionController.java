@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import mdd_api.mdd_api.entities.Subscription;
 import mdd_api.mdd_api.entities.User;
 import mdd_api.mdd_api.payload.response.MessageResponseHandler;
@@ -31,6 +36,15 @@ public class SubscriptionController {
 	}
 	
 	@PostMapping("/subscribe/{topicId}")
+	@Operation(summary = "Subscribe to a specific topic")
+	@ApiResponses(value = {
+		     @ApiResponse(responseCode = "200", description = "Successfull subscription", 
+		    		 content = @Content(mediaType = "application/json",
+	                 schema = @Schema(implementation = MessageResponseHandler.class))),
+		     @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
+		     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content),
+		     @ApiResponse(responseCode = "409", description = "User is already subscribed to this topic", content = @Content)
+	})
 	public ResponseEntity<MessageResponseHandler> subscribe(@PathVariable Long topicId) {
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -43,6 +57,15 @@ public class SubscriptionController {
 	}
 	
 	@DeleteMapping("/unsubscribe/{subId}")
+	@Operation(summary = "unsubscribe to a specific topic")
+	@ApiResponses(value = {
+		     @ApiResponse(responseCode = "200", description = "Successfull unsubscription", 
+		    		 content = @Content(mediaType = "application/json",
+	                 schema = @Schema(implementation = MessageResponseHandler.class))),
+		     @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
+		     @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+		     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content),
+	})
 	public ResponseEntity<MessageResponseHandler> unsubscribe(@PathVariable Long subId) {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -56,6 +79,13 @@ public class SubscriptionController {
 	}
 	
 	 @GetMapping("/user/all")
+	 @Operation(summary = "retrieve all subscription for one user")
+		@ApiResponses(value = {
+			     @ApiResponse(responseCode = "200", description = "Data successfully retrieved", 
+			    		 content = @Content(mediaType = "application/json",
+		                 schema = @Schema(implementation = MessageResponseHandler.class))),
+			     @ApiResponse(responseCode = "400", description = "bad request", content = @Content),
+	 })
 	 public ResponseEntity<List<Subscription>> getAllSubscriptionsByUserId() {
 		 
 		 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
