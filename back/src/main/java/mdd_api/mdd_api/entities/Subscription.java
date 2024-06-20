@@ -32,5 +32,10 @@ public class Subscription {
 	
 	public Subscription() {}
 	
+	public Subscription(User user, Topic topic) {
+	    this.user = user;
+	    this.topic = topic;
+	}
+	
 		
 }

@@ -13,6 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import mdd_api.mdd_api.dto.CommentRequestDto;
 import mdd_api.mdd_api.dto.CommentResponseDto;
@@ -30,6 +35,15 @@ public class CommentController {
 	}
 	
 	@PostMapping("/{postId}/create")
+	@Operation(summary = "Post a new comment", description = "This operation inserts a new comment in DB.")
+	 @ApiResponses(value = {
+	     @ApiResponse(responseCode = "200", description = "Comment successfullly created!", 
+	    		 content = @Content(mediaType = "application/json",
+               schema = @Schema(implementation = MessageResponseHandler.class))),
+	     @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
+	     @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
+	     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
+	})
 	public ResponseEntity<MessageResponseHandler> create(@Valid @RequestBody CommentRequestDto request, @PathVariable Long postId) {
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -43,6 +57,16 @@ public class CommentController {
 	}
 	
 	@GetMapping("/{postId}/all")
+	@PostMapping("/{postId}/create")
+	@Operation(summary = "Get one post' comments", description = "This operation retrieved all comments associated wuith a specific post.")
+	 @ApiResponses(value = {
+	     @ApiResponse(responseCode = "200", description = "List successfully retrieved", 
+	    		 content = @Content(mediaType = "application/json",
+               schema = @Schema(implementation = MessageResponseHandler.class))),
+	     @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
+	     @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
+	     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
+	})
 	public ResponseEntity<List<CommentResponseDto>> getAll(@PathVariable Long postId) {
 		
 		List<CommentResponseDto> list = commentService.getAll(postId);

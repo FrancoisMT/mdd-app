@@ -21,7 +21,6 @@ public class PostDto {
 	
 	private LocalDateTime date;
 
-	@NotNull(message = "User id cannot be NULL")
 	private Long userId;
 	
 	@NotNull(message = "Topic id cannot be NULL")
