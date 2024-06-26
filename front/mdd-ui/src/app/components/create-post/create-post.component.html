@@ -1,1 +1,60 @@
-<p>create-post works!</p>
+<ng-container *ngIf="onError">
+    <app-error-banner [errorMessage]="errorMessage"></app-error-banner>
+</ng-container>
+
+<div class="container">
+
+    <div class="back-link">
+        <mat-icon (click)="back()">arrow_back</mat-icon>
+    </div>
+
+    <div class="post-container">
+        <h2>Créer un nouvel article</h2>
+        <div class="post-form">
+            <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
+                <mat-form-field appearance="fill">
+                    <mat-label>Sélectionnez un thème</mat-label>
+                    <mat-select formControlName="topicId">
+                        <mat-option *ngFor="let topic of topics" [value]="topic.id">
+                            {{ topic.title }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="postForm.get('topicId')?.hasError('required')">
+                        Ce champ est requis
+                    </mat-error>
+                </mat-form-field>
+    
+                <mat-form-field appearance="fill">
+                    <mat-label>Titre de l'article</mat-label>
+                    <input matInput formControlName="title" />
+                    <mat-error *ngIf="postForm.get('title')?.hasError('required')">
+                        Ce champ est requis
+                    </mat-error>
+                    <mat-error *ngIf="postForm.get('title')?.hasError('maxlength')">
+                        Le titre ne doit pas dépasser 200 caractères
+                    </mat-error>
+                </mat-form-field>
+    
+                <mat-form-field appearance="fill">
+                    <mat-label>Contenu de l'article</mat-label>
+                    <textarea matInput formControlName="description" rows="5"></textarea>
+                    <mat-error *ngIf="postForm.get('description')?.hasError('required')">
+                        Ce champ est requis
+                    </mat-error>
+                    <mat-error *ngIf="postForm.get('description')?.hasError('maxlength')">
+                        La description ne doit pas dépasser 2500 caractères
+                    </mat-error>
+                </mat-form-field>
+    
+                <div class="create-button-container">
+                    <button mat-raised-button color="primary" type="submit">Créer un article</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <ng-container *ngIf="isLoading">
+        <app-custom-spinner></app-custom-spinner>
+    </ng-container>
+
+</div>

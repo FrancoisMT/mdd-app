@@ -51,6 +51,7 @@
     padding: 10px;
     box-sizing: border-box;
     background-color: lightgrey;
+    border-radius: 5px;
 }
 
 .topic-content {

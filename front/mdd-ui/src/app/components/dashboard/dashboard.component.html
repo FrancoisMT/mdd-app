@@ -1,1 +1,41 @@
-<p>dashboard works!</p>
+<ng-container *ngIf="onError">
+    <app-error-banner [errorMessage]="errorMessage"></app-error-banner>
+</ng-container>
+
+<div class="container">
+
+    <div class="button-container">
+
+        <button (click)="create()" mat-raised-button color="primary" type="submit">
+            Créer un article
+        </button>
+
+        <div class="sort-container">
+            <span class="sort-label">Trier par</span>
+            <ng-container *ngIf="ascendingOrder">
+                <mat-icon class="sort-link" (click)="reverseOrder()">keyboard_arrow_down</mat-icon>
+            </ng-container>
+            <ng-container *ngIf="!ascendingOrder">
+                <mat-icon class="sort-link" (click)="reverseOrder()">keyboard_arrow_up</mat-icon>
+            </ng-container>
+        </div>
+    </div>
+
+    <div class="post-container">
+        <ng-container *ngFor="let post of posts">
+            <div class="post-card" (click)="onClickDetail(post.id)">
+                <p class="title">{{ post.title }}</p>
+                <div class="post-info">
+                    <p>{{ post.user.username }}</p>
+                    <p>{{ post.date | date: 'dd-MM-YYYY' }}</p>
+                </div>
+                <p class="description">{{ post.description }}</p>
+            </div>
+        </ng-container>
+    </div>
+
+
+    <ng-container *ngIf="isLoading">
+        <app-custom-spinner></app-custom-spinner>
+    </ng-container>
+</div>

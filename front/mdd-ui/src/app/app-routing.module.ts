@@ -8,6 +8,8 @@ import { AuthGuard } from './guards/auth.guard';
 import { NotFoundComponent } from './components/common/not-found/not-found.component';
 import { ProfilComponent } from './components/profil/profil.component';
 import { TopicsComponent } from './components/topics/topics.component';
+import { CreatePostComponent } from './components/create-post/create-post.component';
+import { PostDetailComponent } from './components/post-detail/post-detail.component';
 
 const routes: Routes = [
   {
@@ -40,6 +42,16 @@ const routes: Routes = [
   {
     path: 'topics',
     component: TopicsComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'create',
+    component: CreatePostComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'detail/:id',
+    component: PostDetailComponent,
     canActivate: [AuthGuard]
   },
   {

@@ -11,6 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { DatePipe } from '@angular/common';
 
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -28,6 +29,8 @@ import { ProfilComponent } from './components/profil/profil.component';
 import { PostsComponent } from './components/posts/posts.component';
 import { PostDetailComponent } from './components/post-detail/post-detail.component';
 import { CreatePostComponent } from './components/create-post/create-post.component';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
 
 
 @NgModule({
@@ -60,10 +63,13 @@ import { CreatePostComponent } from './components/create-post/create-post.compon
     HttpClientModule,
     MatProgressSpinnerModule,
     MatIconModule, 
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatSelectModule,
+    MatOptionModule
   ],
   providers: [
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    DatePipe,
   ],
   bootstrap: [AppComponent]
 })

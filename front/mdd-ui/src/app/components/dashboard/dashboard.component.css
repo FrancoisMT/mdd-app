@@ -1,0 +1,81 @@
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.button-container button {
+    background-color: var(--primary-color);
+}
+
+.sort-container {
+    display: flex;
+    align-items: center;
+}
+
+.sort-label {
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+.sort-link {
+    cursor: pointer;
+}
+
+.post-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start; 
+    margin-left: 0.5%;
+    margin-right: 0.5%;
+}
+
+.post-card {
+    cursor: pointer;
+    flex: 1 1 30%;
+    background-color: lightgray; 
+    padding: 20px;
+    overflow: hidden; 
+    border-radius: 5px;
+    margin-left: 0.5%;
+    margin-right: 0.5%;
+    margin-bottom: 0.5%;
+}
+
+.post-card .title {
+    font-weight: bold;
+}
+
+.post-card .post-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.post-card .description {
+    max-height: calc(1.6 * 3); /* Calcule la hauteur maximale en pixels pour environ trois lignes */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Ajouter des points de suspension à la fin */
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Nombre de lignes maximum à afficher */
+    -webkit-box-orient: vertical;
+    white-space: normal; 
+}
+
+
+@media (max-width: 480px) {
+    .button-container {
+        flex-direction: column;
+    }
+
+    .button-container .sort-container {
+        margin-top: 2%;
+        justify-content: center;
+    }
+
+    .post-card {
+        flex: 1 1 100%; /* Une carte par ligne sur petit écran */
+        max-width: 100%;
+    }
+
+}
