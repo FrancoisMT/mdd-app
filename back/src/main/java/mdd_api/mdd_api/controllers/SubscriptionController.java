@@ -3,6 +3,7 @@ package mdd_api.mdd_api.controllers;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/subscription")
 public class SubscriptionController {
 

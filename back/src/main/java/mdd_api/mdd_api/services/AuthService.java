@@ -52,8 +52,11 @@ public class AuthService {
 				
 				authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));			
 				
-				return userRepository.findByMail(user.getMail())
-						.orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));				
+				userRepository.findByMail(user.getMail())
+						.orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));
+						
+			    return userRepository.findByMail(user.getMail())
+						.orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));		
 			
 		 } catch (AuthenticationException e) {
 		       throw new CustomException("Invalid Credentials", HttpStatus.BAD_REQUEST);

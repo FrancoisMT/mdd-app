@@ -1,0 +1,69 @@
+<ng-container *ngIf="onError">
+    <app-error-banner [errorMessage]="errorMessage"></app-error-banner>
+</ng-container>
+
+<div class="container">
+
+    <div class="profil-container">
+        <div class="user-form">
+            <h2>Profil utilisateur</h2>
+            <form (ngSubmit)="onSubmit()" [formGroup]="userForm">
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Email</mat-label>
+                    <input matInput formControlName="email" required>
+                    <mat-error *ngIf="userForm.get('email')?.errors?.['required']">
+                        Ce champ est obligatoire.
+                    </mat-error>
+                    <mat-error *ngIf="userForm.get('email')?.errors?.['email']">
+                        Veuillez saisir une adresse e-mail valide.
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Username</mat-label>
+                    <input matInput formControlName="username" required>
+                    <mat-error *ngIf="userForm.get('username')?.errors?.['required']">
+                        Ce champ est obligatoire.
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Mot de passe</mat-label>
+                    <input matInput type="password" formControlName="password" required>
+                    <mat-error class="pwd-error" *ngIf="userForm.get('password')?.hasError('passwordInvalid')">
+                        Le mot de passe doit comporter au minimum 8 caractères, et doit contenir au moins un chiffre,
+                        une lettre minuscule, une lettre majuscule et un caractère spécial.
+                    </mat-error>
+                </mat-form-field>
+
+                <div class="save-button-container">
+                    <button mat-raised-button color="primary" type="submit">Sauvegarder</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <div class="horizontal-bar">
+        <hr />
+    </div>
+
+    <div class="subscription-container">
+        <h2>Abonnements</h2>
+        <div class="user-subscriptions">
+            <div class="topic-card" *ngFor="let userTopic of userTopics">
+                <div class="topic-content" *ngIf="userTopic.topic">
+                    <p class="topic-title">{{ userTopic.topic.title }}</p>
+                    <p class="topic-description">{{ userTopic.topic.description }}</p>
+                    <button mat-raised-button color="primary" type="submit">Se désabonner</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ng-container *ngIf="isLoading">
+        <app-custom-spinner></app-custom-spinner>
+    </ng-container>
+
+</div>

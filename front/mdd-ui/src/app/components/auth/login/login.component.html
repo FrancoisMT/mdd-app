@@ -1,0 +1,44 @@
+<ng-container *ngIf="onError">
+    <app-error-banner [errorMessage]="errorMessage"></app-error-banner>
+</ng-container>
+
+<div class="back-link">
+    <mat-icon (click)="back()">arrow_back</mat-icon>
+</div>
+
+<div class="login-container">
+
+    <div class="login-form">
+        <h2>Se Connecter</h2>
+        <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" required>
+                <mat-error *ngIf="loginForm.get('email')?.errors?.['required']">
+                    Ce champ est obligatoire.
+                </mat-error>
+                <mat-error *ngIf="loginForm.get('email')?.errors?.['email']">
+                    Veuillez saisir une adresse e-mail valide.
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Mot de passe</mat-label>
+                <input matInput type="password" formControlName="password" required>
+                <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+                    Ce champ est obligatoire.
+                </mat-error>
+            </mat-form-field>
+
+            <div class="button-container">
+                <button mat-raised-button color="primary" type="submit">Se connecter</button>
+            </div>
+        </form>
+    </div>
+
+    <ng-container *ngIf="isLoading">
+        <app-custom-spinner></app-custom-spinner>
+    </ng-container>
+
+</div>
