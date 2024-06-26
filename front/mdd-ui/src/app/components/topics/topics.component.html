@@ -1,1 +1,14 @@
-<p>topics works!</p>
+<ng-container *ngIf="onError">
+    <app-error-banner [errorMessage]="errorMessage"></app-error-banner>
+</ng-container>
+
+<div class="container">
+    <div class="topic-card" *ngFor="let topic of allTopics">
+        <p class="topic-title">{{ topic.title }}</p>
+        <p class="topic-description">{{ topic.description }}</p>
+        <button (click)="subscribe(topic)" mat-raised-button color="primary" type="submit"
+                [disabled]="isSubscribed(topic.id)">
+            S'abonner
+        </button>
+    </div>
+</div>

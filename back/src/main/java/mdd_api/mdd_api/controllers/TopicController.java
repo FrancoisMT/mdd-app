@@ -3,6 +3,7 @@ package mdd_api.mdd_api.controllers;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +18,7 @@ import mdd_api.mdd_api.mapper.TopicMapper;
 import mdd_api.mdd_api.services.TopicService;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/topic")
 public class TopicController {
 
