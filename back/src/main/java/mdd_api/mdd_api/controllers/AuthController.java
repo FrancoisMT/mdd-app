@@ -3,6 +3,7 @@ package mdd_api.mdd_api.controllers;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,6 +62,7 @@ public class AuthController {
 	 }
 	 
 	 @PostMapping("/login")
+	 @CrossOrigin(origins = "*")
 	 @Operation(summary = "Log in a user", description = "This operation logs in a user and returns a jwt token.")
 	    @ApiResponses(value = { 
 	        @ApiResponse(responseCode = "200", description = "User logged in successfully", 
@@ -73,18 +75,18 @@ public class AuthController {
 				 
 		 User authenticatedUser = authService.login(loginRequest);	
 		 String jwtToken = jwtService.generateToken(authenticatedUser);
-		 
+
 		 return ResponseEntity.ok(new JwtResponse(
 				 authenticatedUser.getId(),
-				 authenticatedUser.getUsername(),
+				 authenticatedUser.getName(),
 				 authenticatedUser.getMail(),
-				 
 				 jwtToken
 		));
 		 
 	 }
 	 
 	 @PutMapping("/update")
+	 @CrossOrigin(origins = "http://localhost:4200")
 	 @Operation(summary = "Update user credentials")
 	 @ApiResponses(value = { 
 		        @ApiResponse(responseCode = "200", description = "credentials successfully updated", 
@@ -106,7 +108,7 @@ public class AuthController {
 		 
 		 return ResponseEntity.ok(new JwtResponse(
 				 updatedUser.getId(),
-				 updatedUser.getUsername(),
+				 updatedUser.getName(),
 				 updatedUser.getMail(),
 				 jwtToken
 		)); 

@@ -10,10 +10,10 @@ public class JwtResponse {
 	 private String token;
 	 private String mail;
 	 
-	 public JwtResponse(Long id, String username,String mail, String accessToken) {
+	 public JwtResponse(Long id, String username, String mail, String accessToken) {
 		    this.token = accessToken;
 		    this.id = id;
-		    this.mail = 
+		    this.mail = mail;
 		    this.username = username;
 	 }
 	 

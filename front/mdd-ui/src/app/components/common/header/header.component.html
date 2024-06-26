@@ -1,0 +1,22 @@
+<div class="header">
+    <img src="assets/logo_p6.png" alt="Logo" class="logo">
+
+    <ng-container *ngIf="isLoggedIn">
+        <div class="items" *ngIf="!isMenuOpen">
+            <span class="nav-item" [ngClass]="{'active': activeItem === 'dashboard'}"
+                (click)="goToDashboard()">Articles</span>
+            <span class="nav-item" [ngClass]="{'active': activeItem === 'topics'}" (click)="goToTopics()">Thèmes</span>
+            <mat-icon class="custom-icon" [ngClass]="{'active': activeItem === 'profil'}"
+                (click)="goToProfile()">account_circle</mat-icon>
+        </div>
+        <mat-icon class="burger-icon" (click)="toggleMenu()" *ngIf="!isMenuOpen">menu</mat-icon>
+        <div class="side-menu" [class.open]="isMenuOpen">
+            <div class="back-link">
+                <mat-icon (click)="closeMenu()">arrow_back</mat-icon>
+            </div>
+            <mat-icon class="custom-icon" (click)="goToProfile()">account_circle</mat-icon>
+            <span class="nav-item" (click)="goToDashboard()">Articles</span>
+            <span class="nav-item" (click)="goToTopics()">Thèmes</span>
+        </div>
+    </ng-container>
+</div>
