@@ -33,17 +33,14 @@ export class ProfilComponent implements OnInit {
   }
 
   initForm(currentUser: LoginResponse) {
-
     this.userForm = this.fb.group({
       email: [currentUser.mail, [Validators.required, Validators.email]],
       username: [currentUser.username, Validators.required],
       password: ['', [Validators.required, this.passwordValidator()]] 
     });
-
   }
 
   onSubmit() {
-
     if (this.userForm.valid) {
       this.isLoading = true;
       this.authService.updateCredentials(this.userForm.value, this.currentUser.token).subscribe({
@@ -76,6 +73,28 @@ export class ProfilComponent implements OnInit {
         this.isLoading = false;
         this.onError = true;
         this.errorMessage = "Erreur : une erreur est survenue lors de la récupération des abonnements"
+      },
+    });
+  }
+
+  unsubscribeTopic(topic: Subscription) {
+    this.isLoading = true;
+
+    this.topicService.unsubscribe(topic.id, this.currentUser.token).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        this.snackBar.open('Vous vous êtes désabonné de ce topic', 'Fermer', {
+          duration: 3000, 
+          verticalPosition: 'top', 
+        });
+
+        this.loadUserSubscription();
+
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.onError = true;
+        this.errorMessage = "Erreur : une erreur est survenue lors du désabonnement"
       },
     });
   }

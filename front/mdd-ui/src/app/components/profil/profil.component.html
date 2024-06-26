@@ -31,10 +31,12 @@
                 <mat-form-field appearance="fill" class="full-width">
                     <mat-label>Mot de passe</mat-label>
                     <input matInput type="password" formControlName="password" required>
-                    <mat-error class="pwd-error" *ngIf="userForm.get('password')?.hasError('passwordInvalid')">
-                        Le mot de passe doit comporter au minimum 8 caractères, et doit contenir au moins un chiffre,
-                        une lettre minuscule, une lettre majuscule et un caractère spécial.
-                    </mat-error>
+                    <div class="error-container" *ngIf="userForm.get('password')?.hasError('passwordInvalid')">
+                        <mat-error class="pwd-error">
+                            Le mot de passe doit comporter au minimum 8 caractères, et doit contenir au moins un chiffre,
+                            une lettre minuscule, une lettre majuscule et un caractère spécial.
+                        </mat-error>
+                    </div>
                 </mat-form-field>
 
                 <div class="save-button-container">
@@ -56,7 +58,7 @@
                 <div class="topic-content" *ngIf="userTopic.topic">
                     <p class="topic-title">{{ userTopic.topic.title }}</p>
                     <p class="topic-description">{{ userTopic.topic.description }}</p>
-                    <button mat-raised-button color="primary" type="submit">Se désabonner</button>
+                    <button (click)="unsubscribeTopic(userTopic)" mat-raised-button color="primary" type="submit">Se désabonner</button>
                 </div>
             </div>
         </div>

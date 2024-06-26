@@ -30,7 +30,6 @@ export class AuthService {
   }
 
   public updateCredentials(request: SignupRequest, token?: string): Observable<LoginResponse> {
-
     const headers = new HttpHeaders({
       'Content-Type': 'application/json; charset=utf-8',
       'Authorization': `Bearer ${token}`
