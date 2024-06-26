@@ -48,7 +48,6 @@ public class SubscriptionController {
 		     @ApiResponse(responseCode = "409", description = "User is already subscribed to this topic", content = @Content)
 	})
 	public ResponseEntity<MessageResponseHandler> subscribe(@PathVariable Long topicId) {
-		System.out.println("okkkkkkkkkkkkkkkkk");
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails currentUser = (UserDetails) authentication.getPrincipal();
         String mail = currentUser.getUsername();

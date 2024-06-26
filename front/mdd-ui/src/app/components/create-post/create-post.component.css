@@ -1,0 +1,47 @@
+.container {
+    padding: 2%;
+}
+
+.post-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.post-form {
+    width: 100%;
+}
+
+.post-form form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+mat-form-field {
+    width: 50%;
+    margin: 10px 0; 
+}
+
+.create-button-container button {
+    margin-top: 20px;
+    background-color: var(--primary-color);
+}
+
+.back-link mat-icon {
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    mat-form-field {
+        width: 70%; 
+    }
+}
+
+@media (max-width: 480px) {
+    mat-form-field {
+        width: 90%;
+    }
+}

@@ -1,1 +1,15 @@
-<p>post-detail works!</p>
+<ng-container *ngIf="onError">
+    <app-error-banner [errorMessage]="errorMessage"></app-error-banner>
+</ng-container>
+
+
+<div class="detail-container">
+    
+    <div class="back-link">
+        <mat-icon (click)="back()">arrow_back</mat-icon>
+    </div>
+
+    <ng-container *ngIf="isLoading">
+        <app-custom-spinner></app-custom-spinner>
+    </ng-container>
+</div>
