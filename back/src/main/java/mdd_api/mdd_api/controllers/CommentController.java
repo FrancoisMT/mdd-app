@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,7 @@ import mdd_api.mdd_api.payload.response.MessageResponseHandler;
 import mdd_api.mdd_api.services.CommentService;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/comment")
 public class CommentController {
 
@@ -57,7 +59,6 @@ public class CommentController {
 	}
 	
 	@GetMapping("/{postId}/all")
-	@PostMapping("/{postId}/create")
 	@Operation(summary = "Get one post' comments", description = "This operation retrieved all comments associated wuith a specific post.")
 	 @ApiResponses(value = {
 	     @ApiResponse(responseCode = "200", description = "List successfully retrieved", 

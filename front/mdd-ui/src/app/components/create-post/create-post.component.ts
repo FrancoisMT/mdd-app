@@ -36,7 +36,6 @@ export class CreatePostComponent implements OnInit {
     private fb: FormBuilder
   ) {}
 
-
   initForm() {
     this.postForm = this.fb.group({
       topicId: ['', Validators.required],

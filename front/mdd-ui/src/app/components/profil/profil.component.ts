@@ -124,4 +124,8 @@ export class ProfilComponent implements OnInit {
     this.onError = true;
   }
 
+  logOut() {
+    this.authService.logout();
+  }
+
 }

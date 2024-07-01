@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -19,7 +19,7 @@ import { HomeComponent } from './components/auth/home/home.component';
 import { LoginComponent } from './components/auth/login/login.component';
 import { RegisterComponent } from './components/auth/register/register.component';
 import { HeaderComponent } from './components/common/header/header.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ErrorBannerComponent } from './components/common/error-banner/error-banner.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { CustomSpinnerComponent } from './components/common/custom-spinner/custom-spinner.component';
@@ -31,6 +31,7 @@ import { PostDetailComponent } from './components/post-detail/post-detail.compon
 import { CreatePostComponent } from './components/create-post/create-post.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
+import { ExpiredTokenInterceptor } from './interceptors/ExpiredTokenInterceptor';
 
 
 @NgModule({
@@ -62,7 +63,7 @@ import { MatOptionModule } from '@angular/material/core';
     ReactiveFormsModule,
     HttpClientModule,
     MatProgressSpinnerModule,
-    MatIconModule, 
+    MatIconModule,
     MatSnackBarModule,
     MatSelectModule,
     MatOptionModule
@@ -70,6 +71,13 @@ import { MatOptionModule } from '@angular/material/core';
   providers: [
     provideAnimationsAsync(),
     DatePipe,
+    { provide: HTTP_INTERCEPTORS, useClass: ExpiredTokenInterceptor, multi: true },
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: {
+        subscriptSizing: 'dynamic'
+      }
+    }
   ],
   bootstrap: [AppComponent]
 })

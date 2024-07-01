@@ -26,6 +26,7 @@ import mdd_api.mdd_api.services.AuthService;
 import mdd_api.mdd_api.services.JWTService;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/auth")
 public class AuthController {
 	

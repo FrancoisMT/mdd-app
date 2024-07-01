@@ -4,6 +4,7 @@ import { LoginRequest } from '../models/auth/login-request';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { LoginResponse } from '../models/auth/login-response';
 import { SignupRequest } from '../models/auth/signup-request';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class AuthService {
   private loggedIn = new BehaviorSubject<boolean>(false);
   private pathService = 'http://localhost:8080/auth';
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private router: Router) {
     let currentUser = localStorage.getItem('currentUser');
 
     if (currentUser) {
@@ -27,6 +28,10 @@ export class AuthService {
         this.loggedIn.next(true);
       })
     );
+  }
+
+  public register(request: SignupRequest) {
+    return this.httpClient.post(`${this.pathService}/register`, request);
   }
 
   public updateCredentials(request: SignupRequest, token?: string): Observable<LoginResponse> {
@@ -44,6 +49,8 @@ export class AuthService {
 
   logout() {
     this.loggedIn.next(false);
+    localStorage.removeItem('currentUser');
+    this.router.navigate(["/home"]);
   }
 
   getCurrentUser() {

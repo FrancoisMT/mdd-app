@@ -3,13 +3,71 @@
 </ng-container>
 
 
-<div class="detail-container">
-    
-    <div class="back-link">
-        <mat-icon (click)="back()">arrow_back</mat-icon>
-    </div>
+<ng-container *ngIf="post">
+    <div class="detail-container">
 
-    <ng-container *ngIf="isLoading">
-        <app-custom-spinner></app-custom-spinner>
-    </ng-container>
-</div>
+        <div class="back-link">
+            <mat-icon (click)="back()">arrow_back</mat-icon>
+        </div>
+
+        <div class="post-detail-container">
+            <h2>{{post.title}}</h2>
+            <div class="post-info">
+                <p>{{ post.date | date: 'dd-MM-YYYY' }}</p>
+                <p id="username">{{ post.user.username }}</p>
+                <p id="topic-title">{{ post.topic.title }}</p>
+            </div>
+            <div class="post-content">
+                Content: {{ post.description }}
+            </div>
+        </div>
+
+        <div class="horizontal-bar">
+            <hr />
+        </div>
+
+        <div class="comments-container">
+            <p>Commentaires</p>
+
+            <ng-container *ngIf="comments">
+                <div class="comments" *ngFor="let comment of comments">
+                    <div class="comment">
+                        <p>{{ comment.user.username }}</p>
+                        <div class="comment-content">
+                            <p>{{ comment.content }}</p>
+                        </div>
+                    </div>
+                </div>    
+            </ng-container>
+
+        </div>
+
+        <div class="form-container">
+                <form [formGroup]="commentForm" (ngSubmit)="onSubmit()">
+                    <div class="form">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Écrivez ici votre commentaire</mat-label>
+                            <textarea matInput formControlName="content"></textarea>
+                            <mat-error *ngIf="commentForm.get('description')?.hasError('required')">
+                                Ce champ est requis
+                            </mat-error>
+                            <mat-error *ngIf="commentForm.get('description')?.hasError('maxlength')">
+                                La description ne doit pas dépasser 2500 caractères
+                            </mat-error>
+                        </mat-form-field>
+                        <div class="btn-container">
+                            <mat-icon class="custom-icon" (click)="onSubmit()">send</mat-icon>
+                        </div>
+                    </div>
+                </form>
+        </div>
+
+        <div class="horizontal-bar">
+            <hr />
+        </div>
+
+        <ng-container *ngIf="isLoading">
+            <app-custom-spinner></app-custom-spinner>
+        </ng-container>
+    </div>
+</ng-container>

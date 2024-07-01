@@ -34,7 +34,8 @@ export class PostDetail {
     id!:number;
     title!: string;
     description!:string;
+    date!: string;
     user!: UserInfo;
     topic !: Topic;
-    comment!: Comment[]
+    comments!: Comment[]
 }
