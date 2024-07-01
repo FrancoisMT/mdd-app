@@ -1,0 +1,37 @@
+.register-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.register-form form {
+    width: 100%;
+    max-width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.full-width {
+    margin-bottom: 4%;
+}
+
+mat-form-field {
+    width: 100%
+}
+
+.button-container button {
+    background-color: var(--primary-color);
+}
+
+.back-link mat-icon {
+    cursor: pointer;
+    margin: 1%;
+}
+
+@media (max-width: 480px) {
+    .register-form form {
+        max-width: 80%;
+    }
+}
+

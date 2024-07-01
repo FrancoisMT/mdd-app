@@ -12,7 +12,7 @@
         <h2>Se Connecter</h2>
         <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
 
-            <mat-form-field appearance="fill" class="full-width">
+            <mat-form-field appearance="fill" class="full-width" id="">
                 <mat-label>Email</mat-label>
                 <input matInput formControlName="email" required>
                 <mat-error *ngIf="loginForm.get('email')?.errors?.['required']">

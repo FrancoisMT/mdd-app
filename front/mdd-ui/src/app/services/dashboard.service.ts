@@ -2,13 +2,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Post, PostDetail, PostRequest, PostResponse } from '../models/post';
+import { Comment, CommentRequest } from '../models/comment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DashboardService {
   private path: string = 'http://localhost:8080/posts';
-
+  private commentsPath: string = 'http://localhost:8080/comment';
 
   constructor(private httpClient: HttpClient) { }
 
@@ -34,6 +35,14 @@ export class DashboardService {
     });
 
     return this.httpClient.post<PostResponse>(`${this.path}/create`, request, { headers: headers });
+  }
+
+  addComment(id: number, request: CommentRequest, token: string)  {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.httpClient.post<PostResponse>(`${this.commentsPath}/${id}/create`, request, { headers: headers });
   }
 
 }

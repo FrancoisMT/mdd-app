@@ -77,6 +77,19 @@
     align-self: center;
 }
 
+.full-width {
+    margin-bottom: 4%;
+}
+
+.logout-container {
+    margin-top: 2%;
+}
+
+.logout-container .logout-link {
+    color: red;
+    cursor: pointer;
+}
+
 /* Ajustement pour les écrans plus petits */
 @media (max-width: 768px) {
     .topic-card {

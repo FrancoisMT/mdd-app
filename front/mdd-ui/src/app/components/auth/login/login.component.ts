@@ -15,7 +15,8 @@ export class LoginComponent implements OnInit {
   errorMessage: string = '';
   isLoading = false;
 
-  constructor(private fb: FormBuilder,
+  constructor(
+    private fb: FormBuilder,
     private authService: AuthService,
     private router: Router) {
   }
@@ -32,7 +33,6 @@ export class LoginComponent implements OnInit {
       this.isLoading = true;
       this.authService.login(this.loginForm.value).subscribe({
         next: (response) => {
-          console.log('Login successful', response);
           localStorage.setItem('currentUser', JSON.stringify(response));
           this.router.navigate(['/dashboard']);
           this.isLoading = false;

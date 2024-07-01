@@ -5,3 +5,7 @@ export class Comment {
     user!: UserInfo;
     date!: string;
 }
+
+export class CommentRequest {
+    content!:string;
+}

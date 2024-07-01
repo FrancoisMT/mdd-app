@@ -19,6 +19,7 @@ h2 {
 
 .full-width {
     width: 100%;
+    margin-bottom: 5%;
 }
 
 .button-container {
@@ -35,3 +36,4 @@ h2 {
     cursor: pointer;
     margin: 1%;
 }
+
