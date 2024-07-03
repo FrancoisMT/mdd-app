@@ -28,7 +28,9 @@ export class TopicsComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
-    this.loadTopicsData();
+    if (this.currentUser.token) {
+      this.loadTopicsData();
+    }
   }
 
   loadTopicsData() {

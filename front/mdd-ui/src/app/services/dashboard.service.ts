@@ -8,8 +8,8 @@ import { Comment, CommentRequest } from '../models/comment';
   providedIn: 'root'
 })
 export class DashboardService {
-  private path: string = 'http://localhost:8080/posts';
-  private commentsPath: string = 'http://localhost:8080/comment';
+  public path: string = 'http://localhost:8080/posts';
+  public commentsPath: string = 'http://localhost:8080/comment';
 
   constructor(private httpClient: HttpClient) { }
 

@@ -36,12 +36,12 @@ export class PostDetailComponent implements OnInit {
     if (postId) {
       this.id = +postId;
       this.initForm();
-      this.loadPostDetails(this.id, this.currentUser.token)
+      this.loadPostDetails(this.id, this.currentUser?.token)
     }
   }
 
   loadPostDetails(id: number, token: string) {
-    this.service.getPost(this.id, this.currentUser.token).subscribe({
+    this.service.getPost(this.id, this.currentUser?.token).subscribe({
       next: (response) => {
         this.post = response;
         this.comments = this.post.comments;

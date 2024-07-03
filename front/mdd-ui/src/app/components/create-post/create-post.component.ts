@@ -23,8 +23,10 @@ export class CreatePostComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
-    this.initForm();
-    this.loadTopics();
+    if (this.currentUser.token) {
+      this.initForm();
+      this.loadTopics();
+    }
   }
 
   constructor(
@@ -45,16 +47,18 @@ export class CreatePostComponent implements OnInit {
   }
 
   loadTopics() {
-    this.topicService.getAllTopics(this.currentUser.token).subscribe({
-      next: (response) => {
-        this.topics = response;
-      },
-      error: (error) => {
-        this.isLoading = false;
-        this.onError = true;
-        this.errorMessage = "Erreur : une erreur est survenue lors de la récupération des données";
-      },
-    });
+    if (this.currentUser.token) {
+      this.topicService.getAllTopics(this.currentUser.token).subscribe({
+        next: (response) => {
+          this.topics = response;
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.onError = true;
+          this.errorMessage = "Erreur : une erreur est survenue lors de la récupération des données";
+        },
+      });
+    }
   }
 
   onSubmit() {

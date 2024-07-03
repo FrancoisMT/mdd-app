@@ -28,7 +28,9 @@ export class ProfilComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
-    this.initForm(this.currentUser);
+    if (this.currentUser?.mail && this.currentUser?.username) {
+      this.initForm(this.currentUser);
+    }
     this.loadUserSubscription();
   }
 
@@ -43,7 +45,7 @@ export class ProfilComponent implements OnInit {
   onSubmit() {
     if (this.userForm.valid) {
       this.isLoading = true;
-      this.authService.updateCredentials(this.userForm.value, this.currentUser.token).subscribe({
+      this.authService.updateCredentials(this.userForm.value, this.currentUser?.token).subscribe({
         next: (response) => {
           localStorage.removeItem('currentUser');
           localStorage.setItem('currentUser', JSON.stringify(response));
@@ -64,7 +66,7 @@ export class ProfilComponent implements OnInit {
   }
 
   loadUserSubscription() {
-    this.topicService.getUserTopics(this.currentUser.token).subscribe({
+    this.topicService.getUserTopics(this.currentUser?.token).subscribe({
       next: (response) => {
         this.isLoading = false;
         this.userTopics = response;
@@ -80,7 +82,7 @@ export class ProfilComponent implements OnInit {
   unsubscribeTopic(topic: Subscription) {
     this.isLoading = true;
 
-    this.topicService.unsubscribe(topic.id, this.currentUser.token).subscribe({
+    this.topicService.unsubscribe(topic.id, this.currentUser?.token).subscribe({
       next: (response) => {
         this.isLoading = false;
         this.snackBar.open('Vous vous êtes désabonné de ce topic', 'Fermer', {
@@ -113,7 +115,7 @@ export class ProfilComponent implements OnInit {
     };
   }
 
-  private handleError(error: any): void {
+  public handleError(error: any): void {
 
     if (error.status === 409) {
       this.errorMessage = 'Erreur : un mail est déjà associé à ce compte.';
