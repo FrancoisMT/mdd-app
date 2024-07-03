@@ -8,8 +8,8 @@ import { Topic } from '../models/topic';
   providedIn: 'root'
 })
 export class TopicService {
-  private subscriptionPath: string = 'http://localhost:8080/subscription';
-  private topicPath: string = 'http://localhost:8080/topic';
+  public subscriptionPath: string = 'http://localhost:8080/subscription';
+  public topicPath: string = 'http://localhost:8080/topic';
 
   constructor(private httpClient: HttpClient) { }
 

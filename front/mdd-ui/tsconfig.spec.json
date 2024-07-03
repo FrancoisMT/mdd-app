@@ -7,7 +7,7 @@
       "jest", "node"
     ]
   },
-  "files": ["src/test.ts"],
+  "files": ["src/setup-jest.ts"],
   "include": [
     "src/**/*.spec.ts",
     "src/**/*.d.ts"

@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
   private loggedIn = new BehaviorSubject<boolean>(false);
-  private pathService = 'http://localhost:8080/auth';
+  public pathService = 'http://localhost:8080/auth';
 
   constructor(private httpClient: HttpClient, private router: Router) {
     let currentUser = localStorage.getItem('currentUser');
