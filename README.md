@@ -28,6 +28,10 @@ To run this project, you must configure the following environment variables:
 ### Back-end Unit and Integration Testing (JUnit and Mockito)
 1. In the back-end project area, run `mvn clean test` to perform back-end unit and integration tests via JUnit and Mockito
 
+## Conducting tests using Swagger UI
+- Run the application mdd-app
+- Access the Swagger UI documentation at http://localhost:8080/swagger-ui/index.html
+
 ## Main technologies used in the development of the mdd App :
 - NodeJS v20
 - Angular CLI v17
