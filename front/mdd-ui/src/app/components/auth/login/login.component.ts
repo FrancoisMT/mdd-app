@@ -4,6 +4,7 @@ import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
+import { LoginResponse } from '../../../models/auth/login-response';
 
 @Component({
   selector: 'app-login',
@@ -35,12 +36,12 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.isLoading = true;
 
       this.loginSubscription = this.authService.login(this.loginForm.value).subscribe({
-        next: (response) => {
+        next: (response: LoginResponse) => {
           localStorage.setItem('currentUser', JSON.stringify(response));
           this.router.navigate(['/dashboard']);
           this.isLoading = false;
         },
-        error: (error) => {
+        error: (error: any) => {
           this.handleError(error);
           this.isLoading = false;
         },

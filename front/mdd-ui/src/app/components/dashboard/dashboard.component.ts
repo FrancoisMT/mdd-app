@@ -26,23 +26,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private router: Router
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
     if (this.currentUser?.token) {
       this.loadUserPosts();
     }
   }
 
-  loadUserPosts() {
+  loadUserPosts(): void{
     this.postSubscription = this.service.getPosts(this.currentUser.token).subscribe({
-      next: (response) => {
+      next: (response: Post[]) => {
         this.posts = response.sort((a, b) => {
           const dateA = new Date(a.date);
           const dateB = new Date(b.date);
           return dateB.getTime() - dateA.getTime();
         });
       },
-      error: (error) => {
+      error: (error: any) => {
         this.isLoading = false;
         this.onError = true;
         this.errorMessage = "Erreur : une erreur est survenue lors de la récupération de votre fil d'actualité";
@@ -50,11 +50,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  create() {
+  create(): void {
     this.router.navigate(['/create']);
   }
 
-  reverseOrder() {
+  reverseOrder(): void {
     this.ascendingOrder = !this.ascendingOrder;
 
     if (this.ascendingOrder) {

@@ -9,7 +9,7 @@ export class ExpiredTokenInterceptor implements HttpInterceptor {
 
     constructor(private router: Router, private authService: AuthService) { }
 
-    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    intercept<T>(request: HttpRequest<T>, next: HttpHandler): Observable<HttpEvent<String>> {
         return next.handle(request).pipe(
             catchError((error: HttpErrorResponse) => {
                 if (error.status === 401 && error.error === 'Token has expired.') {

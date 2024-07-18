@@ -4,6 +4,7 @@ import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
+import { SignupResponse } from '../../../models/auth/signup-response';
 
 @Component({
   selector: 'app-register',
@@ -28,7 +29,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.initForm();
   }
 
-  initForm() {
+  initForm(): void {
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, this.passwordValidator()]],
@@ -36,19 +37,20 @@ export class RegisterComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSubmit() {
+  onSubmit(): void {
     if (this.registerForm.valid) {
       this.isLoading = true;
+
       this.registerSubscription = this.authService.register(this.registerForm.value).subscribe({
-        next: (response) => {
+        next: (response: SignupResponse) => {
           this.isLoading = false;
-          this.snackBar.open('Utilisateur enregistrer avec succès !', 'Fermer', {
+          this.snackBar.open(response.message, 'Fermer', {
             duration: 5000,
             verticalPosition: 'top',
           });
           this.router.navigate(['/login']);
         },
-        error: (error) => {
+        error: (error: any) => {
           this.isLoading = false;
           this.handleError(error);
         },
@@ -57,8 +59,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   passwordValidator(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
+    return (control: AbstractControl): { [key: string]: boolean  } | null => {
       const value = control.value;
+
       if (!value) {
         return { 'passwordInvalid': true };
       }

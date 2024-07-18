@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Post, PostDetail, PostRequest, PostResponse } from '../models/post';
 import { Comment, CommentRequest } from '../models/comment';
+import { MessageResponse } from '../models/message-response';
 
 @Injectable({
   providedIn: 'root'
@@ -29,15 +30,15 @@ export class DashboardService {
     return this.httpClient.get<PostDetail>(`${this.path}/${id}`, { headers: headers });
   }
 
-  createPost(request: PostRequest, token: string): Observable<PostResponse> {
+  createPost(request: PostRequest, token: string): Observable<MessageResponse> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
 
-    return this.httpClient.post<PostResponse>(`${this.path}/create`, request, { headers: headers });
+    return this.httpClient.post<MessageResponse>(`${this.path}/create`, request, { headers: headers });
   }
 
-  addComment(id: number, request: CommentRequest, token: string)  {
+  addComment(id: number, request: CommentRequest, token: string): Observable<PostResponse>  {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
