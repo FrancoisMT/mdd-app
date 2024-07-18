@@ -54,7 +54,7 @@ public class SubscriptionController {
                 
         subscriptionService.subscribe(mail, topicId);
         
-        return ResponseEntity.ok(new MessageResponseHandler("Ok"));		
+        return ResponseEntity.ok(new MessageResponseHandler("Vous êtes désormais abonné à ce thème !"));		
 	}
 	
 	@DeleteMapping("/unsubscribe/{subId}")
@@ -75,7 +75,7 @@ public class SubscriptionController {
 		
         subscriptionService.unsubscribe(subId, mail);
 
-        return ResponseEntity.ok(new MessageResponseHandler("Ok"));		
+        return ResponseEntity.ok(new MessageResponseHandler("Vous êtes bien désabonné"));		
 		
 	}
 	

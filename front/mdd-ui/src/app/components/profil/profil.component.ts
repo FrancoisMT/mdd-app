@@ -6,6 +6,7 @@ import { MatSnackBar, MatSnackBarVerticalPosition  } from '@angular/material/sna
 import { TopicService } from '../../services/topic.service';
 import { SubscriptionData} from '../../models/subscription';
 import { Subscription } from 'rxjs';
+import { MessageResponse } from '../../models/message-response';
 
 @Component({
   selector: 'app-profil',
@@ -36,7 +37,7 @@ export class ProfilComponent implements OnInit, OnDestroy {
     this.loadUserSubscription();
   }
 
-  initForm(currentUser: LoginResponse) {
+  initForm(currentUser: LoginResponse): void {
     this.userForm = this.fb.group({
       email: [currentUser.mail, [Validators.required, Validators.email]],
       username: [currentUser.username, Validators.required],
@@ -44,11 +45,11 @@ export class ProfilComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSubmit() {
+  onSubmit(): void {
     if (this.userForm.valid) {
       this.isLoading = true;
       const updateCredsSub: Subscription = this.authService.updateCredentials(this.userForm.value, this.currentUser?.token).subscribe({
-        next: (response) => {
+        next: (response: LoginResponse) => {
           localStorage.removeItem('currentUser');
           localStorage.setItem('currentUser', JSON.stringify(response));
           this.isLoading = false;
@@ -58,7 +59,7 @@ export class ProfilComponent implements OnInit, OnDestroy {
             verticalPosition: 'top', 
           });
         },
-        error: (error) => {
+        error: (error: any) => {
           this.isLoading = false;
           this.handleError(error);
         },
@@ -69,13 +70,13 @@ export class ProfilComponent implements OnInit, OnDestroy {
 
   }
 
-  loadUserSubscription() {
+  loadUserSubscription(): void {
     const userSub : Subscription = this.topicService.getUserTopics(this.currentUser?.token).subscribe({
-      next: (response) => {
+      next: (response: SubscriptionData[]) => {
         this.isLoading = false;
         this.userTopics = response;
       },
-      error: (error) => {
+      error: (error: any) => {
         this.isLoading = false;
         this.onError = true;
         this.errorMessage = "Erreur : une erreur est survenue lors de la récupération des abonnements"
@@ -85,13 +86,13 @@ export class ProfilComponent implements OnInit, OnDestroy {
     this.subscriptions.add(userSub);
   }
 
-  unsubscribeTopic(topic: SubscriptionData) {
+  unsubscribeTopic(topic: SubscriptionData): void {
     this.isLoading = true;
 
     const unsubscribeSub: Subscription = this.topicService.unsubscribe(topic.id, this.currentUser?.token).subscribe({
-      next: (response) => {
+      next: (response: MessageResponse) => {
         this.isLoading = false;
-        this.snackBar.open('Vous vous êtes désabonné de ce topic', 'Fermer', {
+        this.snackBar.open(response.message, 'Fermer', {
           duration: 3000, 
           verticalPosition: 'top', 
         });
@@ -99,7 +100,7 @@ export class ProfilComponent implements OnInit, OnDestroy {
         this.loadUserSubscription();
 
       },
-      error: (error) => {
+      error: (error: any) => {
         this.isLoading = false;
         this.onError = true;
         this.errorMessage = "Erreur : une erreur est survenue lors du désabonnement"
@@ -134,7 +135,7 @@ export class ProfilComponent implements OnInit, OnDestroy {
     this.onError = true;
   }
 
-  logOut() {
+  logOut(): void {
     this.authService.logout();
   }
 

@@ -5,6 +5,8 @@ import { LoginResponse } from '../../models/auth/login-response';
 import { Topic } from '../../models/topic';
 import { forkJoin, Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MessageResponse } from '../../models/message-response';
+import { SubscriptionData } from '../../models/subscription';
 
 @Component({
   selector: 'app-topics',
@@ -34,18 +36,19 @@ export class TopicsComponent implements OnInit, OnDestroy {
     }
   }
 
-  loadTopicsData() {
+  loadTopicsData(): void {
     this.isLoading = true;
+
     const topicsSubscription: Subscription = forkJoin({
       allTopics: this.topicService.getAllTopics(this.currentUser.token),
       userTopics: this.topicService.getUserTopics(this.currentUser.token)
     }).subscribe({
-      next: (results) => {
+      next: (results: { allTopics: Topic[], userTopics: SubscriptionData[] }) => {
         this.allTopics = results.allTopics;
         this.userTopics = results.userTopics.map(subscription => subscription.topic);
         this.isLoading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         this.isLoading = false;
         this.onError = true;
         this.errorMessage = "Erreur : une erreur est survenue lors de la récupération des thèmes et abonnements";
@@ -59,18 +62,18 @@ export class TopicsComponent implements OnInit, OnDestroy {
     return this.userTopics.some(topic => topic.id === topicId);
   }
 
-  subscribe(topic: Topic) {
+  subscribe(topic: Topic): void {
     this.isLoading = true;
 
     const topicSubsribeSubscription: Subscription = this.topicService.subscribeToTopic(topic.id, this.currentUser.token).subscribe({
-      next: (response) => {
+      next: (response: MessageResponse) => {
         this.loadTopicsData();
-        this.snackBar.open('Vous êtes maintenant abonné à ' + topic.title + '.', 'Fermer', {
+        this.snackBar.open(response.message, 'Fermer', {
           duration: 5000,
           verticalPosition: 'top',
         });
       },
-      error: (error) => {
+      error: (error: any) => {
         this.isLoading = false;
         this.onError = true;
         this.errorMessage = "Erreur : une erreur est survenue lors de l'abonnement au thème";

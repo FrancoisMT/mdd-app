@@ -54,7 +54,7 @@ public class PostController {
               
         service.create(mail, request);
 		
-        return ResponseEntity.ok(new MessageResponseHandler("Post successfully created"));		
+        return ResponseEntity.ok(new MessageResponseHandler("Article créé avec succès !"));		
 
 	}
 	

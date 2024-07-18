@@ -41,13 +41,13 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  loadPostDetails(id: number, token: string) {
-    const postDetailSub : Subscription = this.service.getPost(this.id, this.currentUser?.token).subscribe({
-      next: (response) => {
+  loadPostDetails(id: number, token: string): void {
+    const postDetailSub : Subscription = this.service.getPost(id, token).subscribe({
+      next: (response: PostDetail) => {
         this.post = response;
         this.comments = this.post.comments;
       },
-      error: (error) => {
+      error: (error: any) => {
         this.isLoading = false;
         this.onError = true;
         this.errorMessage = "Erreur : une erreur est survenue lors du chargement de l'article";
@@ -57,22 +57,22 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     this.subscriptions.add(postDetailSub);
   }
 
-  initForm() {
+  initForm(): void {
     this.commentForm = this.fb.group({
       content: ['', [Validators.required, Validators.maxLength(2500)]],
     });
   }
 
-  onSubmit() {
+  onSubmit(): void {
     if (this.commentForm.valid) {
       this.isLoading = true;
       const createCommentSub: Subscription = this.service.addComment(this.id, this.commentForm.value,this.currentUser.token).subscribe({
-        next: (response) => {
+        next: () => {
           this.loadPostDetails(this.id, this.currentUser.token);
           this.initForm();
           this.isLoading = false;
         },
-        error: (error) => {
+        error: (error: any) => {
           this.isLoading = false;
           this.onError = true;
           this.errorMessage = "Erreur : une erreur est survenue lors de l'ajout du commentaire";
@@ -84,7 +84,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  back() {
+  back(): void {
     this.router.navigate(['/dashboard']);
   }
 

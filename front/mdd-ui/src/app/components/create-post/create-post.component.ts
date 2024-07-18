@@ -8,6 +8,8 @@ import { Topic } from '../../models/topic';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { PostResponse } from '../../models/post';
+import { MessageResponse } from '../../models/message-response';
 
 @Component({
   selector: 'app-create-post',
@@ -40,7 +42,7 @@ export class CreatePostComponent implements OnInit, OnDestroy {
     private fb: FormBuilder
   ) {}
 
-  initForm() {
+  initForm(): void {
     this.postForm = this.fb.group({
       topicId: ['', Validators.required],
       title: ['', [Validators.required, Validators.maxLength(200)]],
@@ -48,13 +50,13 @@ export class CreatePostComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadTopics() {
+  loadTopics(): void {
     if (this.currentUser.token) {
       const topicsSubscription: Subscription = this.topicService.getAllTopics(this.currentUser.token).subscribe({
-        next: (response) => {
+        next: (response: Topic[]) => {
           this.topics = response;
         },
-        error: (error) => {
+        error: (error: any) => {
           this.isLoading = false;
           this.onError = true;
           this.errorMessage = "Erreur : une erreur est survenue lors de la récupération des données";
@@ -65,20 +67,20 @@ export class CreatePostComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSubmit() {
+  onSubmit(): void {
     if (this.postForm.valid) {
       this.isLoading = true;
       const postSubscription: Subscription = this.dashboardService.createPost(this.postForm.value, this.currentUser.token).subscribe({
-        next: (response) => {
+        next: (response: MessageResponse) => {
           this.isLoading = false;
-          this.snackBar.open('Article publié avec succès !', 'Fermer', {
+          this.snackBar.open(response.message, 'Fermer', {
             duration: 5000, 
             verticalPosition: 'top', 
           });
 
           this.router.navigate(["/dashboard"]);
         },
-        error: (error) => {
+        error: (error: any) => {
           this.isLoading = false;
           this.onError = true;
           this.errorMessage = "Une erreur est survenue au moment de la publication de l'article."
@@ -89,7 +91,7 @@ export class CreatePostComponent implements OnInit, OnDestroy {
     }
   }
 
-  back() {
+  back(): void {
     this.router.navigate(['/dashboard']);
   }
 

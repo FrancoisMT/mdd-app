@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { LoginResponse } from '../models/auth/login-response';
 import { SignupRequest } from '../models/auth/signup-request';
 import { Router } from '@angular/router';
+import { SignupResponse } from '../models/auth/signup-response';
 
 @Injectable({
   providedIn: 'root'
@@ -30,8 +31,8 @@ export class AuthService {
     );
   }
 
-  public register(request: SignupRequest) {
-    return this.httpClient.post(`${this.pathService}/register`, request);
+  public register(request: SignupRequest): Observable<SignupResponse> {
+    return this.httpClient.post<SignupResponse>(`${this.pathService}/register`, request);
   }
 
   public updateCredentials(request: SignupRequest, token?: string): Observable<LoginResponse> {
@@ -47,13 +48,13 @@ export class AuthService {
     return this.loggedIn.asObservable();
   }
 
-  logout() {
+  logout(): void {
     this.loggedIn.next(false);
     localStorage.removeItem('currentUser');
     this.router.navigate(["/home"]);
   }
 
-  getCurrentUser() {
+  getCurrentUser(): LoginResponse {
     let currentUser = localStorage.getItem('currentUser');
     return currentUser ? JSON.parse(currentUser) : null;
   }
