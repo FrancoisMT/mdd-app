@@ -37,7 +37,7 @@ public class TopicController {
 	        @ApiResponse(responseCode = "400", description = "Bad request", content = @Content), 
 	        @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
 	})
-	public ResponseEntity<List<TopicDto>> getAll() throws Exception {
+	public ResponseEntity<List<TopicDto>> getAll() {
 
 		List<Topic> list = service.getAll();
 		List<TopicDto> dtoList = TopicMapper.toDtoList(list);

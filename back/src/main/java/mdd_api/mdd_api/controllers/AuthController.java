@@ -49,8 +49,7 @@ public class AuthController {
 	     @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
 	     @ApiResponse(responseCode = "409", description = "Email already exists", content = @Content)
 	 })
-	 public ResponseEntity<MessageResponseHandler> registerUser(@Valid @RequestBody SignupRequest signUpRequest) throws Exception {
-		 
+	 public ResponseEntity<MessageResponseHandler> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 		 User user = new User();
 		 user.setMail(signUpRequest.getEmail());
 		 user.setName(signUpRequest.getUsername());
@@ -72,7 +71,7 @@ public class AuthController {
 	        @ApiResponse(responseCode = "400", description = "Invalid credentials", content = @Content), 
 	        @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
 	 })
-	 public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+	 public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 				 
 		 User authenticatedUser = authService.login(loginRequest);	
 		 String jwtToken = jwtService.generateToken(authenticatedUser);
@@ -98,7 +97,6 @@ public class AuthController {
 		        @ApiResponse(responseCode = "409", description = "Email already exists", content = @Content)
 	 })
 	 public ResponseEntity<JwtResponse> updateCredentials(@Valid @RequestBody SignupRequest request) {
-		 
 		 User user = new User();
 		 user.setMail(request.getEmail());
 		 user.setName(request.getUsername());
