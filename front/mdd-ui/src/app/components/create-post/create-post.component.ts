@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { TopicService } from '../../services/topic.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -7,19 +7,21 @@ import { LoginResponse } from '../../models/auth/login-response';
 import { Topic } from '../../models/topic';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-create-post',
   templateUrl: './create-post.component.html',
   styleUrl: './create-post.component.css'
 })
-export class CreatePostComponent implements OnInit {
-  public currentUser!: LoginResponse;
-  public onError: boolean = false;
-  public isLoading: boolean = false;
-  public errorMessage: string = "";
-  public topics: Topic[] = [];
-  public postForm!:FormGroup;
+export class CreatePostComponent implements OnInit, OnDestroy {
+  currentUser!: LoginResponse;
+  onError: boolean = false;
+  isLoading: boolean = false;
+  errorMessage: string = "";
+  topics: Topic[] = [];
+  postForm!:FormGroup;
+  subscriptions: Subscription = new Subscription();
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
@@ -48,7 +50,7 @@ export class CreatePostComponent implements OnInit {
 
   loadTopics() {
     if (this.currentUser.token) {
-      this.topicService.getAllTopics(this.currentUser.token).subscribe({
+      const topicsSubscription: Subscription = this.topicService.getAllTopics(this.currentUser.token).subscribe({
         next: (response) => {
           this.topics = response;
         },
@@ -58,13 +60,15 @@ export class CreatePostComponent implements OnInit {
           this.errorMessage = "Erreur : une erreur est survenue lors de la récupération des données";
         },
       });
+
+      this.subscriptions.add(topicsSubscription);
     }
   }
 
   onSubmit() {
     if (this.postForm.valid) {
       this.isLoading = true;
-      this.dashboardService.createPost(this.postForm.value, this.currentUser.token).subscribe({
+      const postSubscription: Subscription = this.dashboardService.createPost(this.postForm.value, this.currentUser.token).subscribe({
         next: (response) => {
           this.isLoading = false;
           this.snackBar.open('Article publié avec succès !', 'Fermer', {
@@ -80,6 +84,8 @@ export class CreatePostComponent implements OnInit {
           this.errorMessage = "Une erreur est survenue au moment de la publication de l'article."
         },
       });
+
+      this.subscriptions.add(postSubscription);
     }
   }
 
@@ -87,5 +93,8 @@ export class CreatePostComponent implements OnInit {
     this.router.navigate(['/dashboard']);
   }
 
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
 
 }

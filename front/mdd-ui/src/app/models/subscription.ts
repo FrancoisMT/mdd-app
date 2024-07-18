@@ -1,6 +1,6 @@
 import { Topic } from "./topic";
 
-export class Subscription {
+export class SubscriptionData {
     id!:number;
     topic!: Topic
 }

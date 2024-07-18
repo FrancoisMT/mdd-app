@@ -1,19 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
   onError: boolean = false;
   errorMessage: string = '';
   isLoading = false;
+  loginSubscription: Subscription = new Subscription();
 
   constructor(
     private fb: FormBuilder,
@@ -31,7 +33,8 @@ export class LoginComponent implements OnInit {
   onSubmit(): void {
     if (this.loginForm.valid) {
       this.isLoading = true;
-      this.authService.login(this.loginForm.value).subscribe({
+
+      this.loginSubscription = this.authService.login(this.loginForm.value).subscribe({
         next: (response) => {
           localStorage.setItem('currentUser', JSON.stringify(response));
           this.router.navigate(['/dashboard']);
@@ -65,6 +68,10 @@ export class LoginComponent implements OnInit {
 
   back(): void {
     this.router.navigate(['/home']);
+  }
+
+  ngOnDestroy(): void {
+    this.loginSubscription.unsubscribe();
   }
 
 }

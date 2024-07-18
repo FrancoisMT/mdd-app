@@ -1,19 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
-export class RegisterComponent implements OnInit {
-  registerForm!:FormGroup;
+export class RegisterComponent implements OnInit, OnDestroy {
+  registerForm!: FormGroup;
   onError: boolean = false;
   errorMessage: string = '';
   isLoading = false;
+  registerSubscription: Subscription = new Subscription();
 
   constructor(
     private fb: FormBuilder,
@@ -37,12 +39,12 @@ export class RegisterComponent implements OnInit {
   onSubmit() {
     if (this.registerForm.valid) {
       this.isLoading = true;
-      this.authService.register(this.registerForm.value).subscribe({
+      this.registerSubscription = this.authService.register(this.registerForm.value).subscribe({
         next: (response) => {
           this.isLoading = false;
           this.snackBar.open('Utilisateur enregistrer avec succès !', 'Fermer', {
-            duration: 5000, 
-            verticalPosition: 'top', 
+            duration: 5000,
+            verticalPosition: 'top',
           });
           this.router.navigate(['/login']);
         },
@@ -81,6 +83,10 @@ export class RegisterComponent implements OnInit {
 
   back(): void {
     this.router.navigate(['/home']);
+  }
+
+  ngOnDestroy(): void {
+    this.registerSubscription.unsubscribe();
   }
 
 }
