@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TopicService } from '../../services/topic.service';
 import { AuthService } from '../../services/auth.service';
 import { LoginResponse } from '../../models/auth/login-response';
 import { Topic } from '../../models/topic';
-import { Subscription } from '../../models/subscription';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -12,13 +11,15 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './topics.component.html',
   styleUrl: './topics.component.css'
 })
-export class TopicsComponent implements OnInit {
-  public currentUser!: LoginResponse;
-  public onError: boolean = false;
-  public isLoading: boolean = false;
-  public errorMessage: string = "";
-  public allTopics: Topic[] = [];
-  public userTopics: Topic[] = [];
+export class TopicsComponent implements OnInit, OnDestroy {
+  currentUser!: LoginResponse;
+  onError: boolean = false;
+  isLoading: boolean = false;
+  errorMessage: string = "";
+  allTopics: Topic[] = [];
+  userTopics: Topic[] = [];
+  subscriptions: Subscription = new Subscription();
+
 
   constructor(
     private authService: AuthService,
@@ -35,7 +36,7 @@ export class TopicsComponent implements OnInit {
 
   loadTopicsData() {
     this.isLoading = true;
-    forkJoin({
+    const topicsSubscription: Subscription = forkJoin({
       allTopics: this.topicService.getAllTopics(this.currentUser.token),
       userTopics: this.topicService.getUserTopics(this.currentUser.token)
     }).subscribe({
@@ -50,6 +51,8 @@ export class TopicsComponent implements OnInit {
         this.errorMessage = "Erreur : une erreur est survenue lors de la récupération des thèmes et abonnements";
       }
     });
+
+    this.subscriptions.add(topicsSubscription);
   }
 
   isSubscribed(topicId: number): boolean {
@@ -59,12 +62,12 @@ export class TopicsComponent implements OnInit {
   subscribe(topic: Topic) {
     this.isLoading = true;
 
-    this.topicService.subscribeToTopic(topic.id, this.currentUser.token).subscribe({
+    const topicSubsribeSubscription: Subscription = this.topicService.subscribeToTopic(topic.id, this.currentUser.token).subscribe({
       next: (response) => {
         this.loadTopicsData();
         this.snackBar.open('Vous êtes maintenant abonné à ' + topic.title + '.', 'Fermer', {
-          duration: 5000, 
-          verticalPosition: 'top', 
+          duration: 5000,
+          verticalPosition: 'top',
         });
       },
       error: (error) => {
@@ -73,6 +76,12 @@ export class TopicsComponent implements OnInit {
         this.errorMessage = "Erreur : une erreur est survenue lors de l'abonnement au thème";
       },
     });
+
+    this.subscriptions.add(topicSubsribeSubscription);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
 }

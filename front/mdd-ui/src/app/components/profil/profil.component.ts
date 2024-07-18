@@ -1,23 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { LoginResponse } from '../../models/auth/login-response';
 import { AuthService } from '../../services/auth.service';
 import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MatSnackBar, MatSnackBarVerticalPosition  } from '@angular/material/snack-bar';
 import { TopicService } from '../../services/topic.service';
-import { Subscription } from '../../models/subscription';
+import { SubscriptionData} from '../../models/subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-profil',
   templateUrl: './profil.component.html',
   styleUrl: './profil.component.css'
 })
-export class ProfilComponent implements OnInit {
-  public currentUser!: LoginResponse;
-  public userForm!: FormGroup;
-  public isLoading : boolean = false;
-  public onError: boolean = false;
-  public errorMessage: string = '';
-  public userTopics: Subscription[] = [];
+export class ProfilComponent implements OnInit, OnDestroy {
+  currentUser!: LoginResponse;
+  userForm!: FormGroup;
+  isLoading : boolean = false;
+  onError: boolean = false;
+  errorMessage: string = '';
+  userTopics: SubscriptionData[] = [];
+  subscriptions: Subscription = new Subscription();
 
   constructor(
     private authService: AuthService,
@@ -45,7 +47,7 @@ export class ProfilComponent implements OnInit {
   onSubmit() {
     if (this.userForm.valid) {
       this.isLoading = true;
-      this.authService.updateCredentials(this.userForm.value, this.currentUser?.token).subscribe({
+      const updateCredsSub: Subscription = this.authService.updateCredentials(this.userForm.value, this.currentUser?.token).subscribe({
         next: (response) => {
           localStorage.removeItem('currentUser');
           localStorage.setItem('currentUser', JSON.stringify(response));
@@ -61,12 +63,14 @@ export class ProfilComponent implements OnInit {
           this.handleError(error);
         },
       });
+
+      this.subscriptions.add(updateCredsSub);
     }
 
   }
 
   loadUserSubscription() {
-    this.topicService.getUserTopics(this.currentUser?.token).subscribe({
+    const userSub : Subscription = this.topicService.getUserTopics(this.currentUser?.token).subscribe({
       next: (response) => {
         this.isLoading = false;
         this.userTopics = response;
@@ -77,12 +81,14 @@ export class ProfilComponent implements OnInit {
         this.errorMessage = "Erreur : une erreur est survenue lors de la récupération des abonnements"
       },
     });
+
+    this.subscriptions.add(userSub);
   }
 
-  unsubscribeTopic(topic: Subscription) {
+  unsubscribeTopic(topic: SubscriptionData) {
     this.isLoading = true;
 
-    this.topicService.unsubscribe(topic.id, this.currentUser?.token).subscribe({
+    const unsubscribeSub: Subscription = this.topicService.unsubscribe(topic.id, this.currentUser?.token).subscribe({
       next: (response) => {
         this.isLoading = false;
         this.snackBar.open('Vous vous êtes désabonné de ce topic', 'Fermer', {
@@ -99,6 +105,8 @@ export class ProfilComponent implements OnInit {
         this.errorMessage = "Erreur : une erreur est survenue lors du désabonnement"
       },
     });
+
+    this.subscriptions.add(unsubscribeSub);
   }
 
   passwordValidator(): ValidatorFn {
@@ -128,6 +136,10 @@ export class ProfilComponent implements OnInit {
 
   logOut() {
     this.authService.logout();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
 }

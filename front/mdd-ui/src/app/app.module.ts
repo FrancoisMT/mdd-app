@@ -26,7 +26,6 @@ import { CustomSpinnerComponent } from './components/common/custom-spinner/custo
 import { NotFoundComponent } from './components/common/not-found/not-found.component';
 import { TopicsComponent } from './components/topics/topics.component';
 import { ProfilComponent } from './components/profil/profil.component';
-import { PostsComponent } from './components/posts/posts.component';
 import { PostDetailComponent } from './components/post-detail/post-detail.component';
 import { CreatePostComponent } from './components/create-post/create-post.component';
 import { MatSelectModule } from '@angular/material/select';
@@ -47,7 +46,6 @@ import { ExpiredTokenInterceptor } from './interceptors/ExpiredTokenInterceptor'
     NotFoundComponent,
     TopicsComponent,
     ProfilComponent,
-    PostsComponent,
     PostDetailComponent,
     CreatePostComponent
   ],

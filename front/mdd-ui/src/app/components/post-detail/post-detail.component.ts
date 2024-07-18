@@ -1,26 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { LoginResponse } from '../../models/auth/login-response';
 import { AuthService } from '../../services/auth.service';
 import { DashboardService } from '../../services/dashboard.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PostDetail } from '../../models/post';
-import { Comment } from '../../models/comment';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-post-detail',
   templateUrl: './post-detail.component.html',
   styleUrl: './post-detail.component.css'
 })
-export class PostDetailComponent implements OnInit {
-  public currentUser!: LoginResponse;
-  public onError: boolean = false;
-  public isLoading: boolean = false;
-  public errorMessage: string = "";
-  public id!: number;
-  public post!: PostDetail;
-  public comments: any[] = [];
-  public commentForm!: FormGroup;
+export class PostDetailComponent implements OnInit, OnDestroy {
+  currentUser!: LoginResponse;
+  onError: boolean = false;
+  isLoading: boolean = false;
+  errorMessage: string = "";
+  id!: number;
+  post!: PostDetail;
+  comments: any[] = [];
+  commentForm!: FormGroup;
+  subscriptions: Subscription = new Subscription();
 
   constructor(
     private authService: AuthService,
@@ -41,7 +42,7 @@ export class PostDetailComponent implements OnInit {
   }
 
   loadPostDetails(id: number, token: string) {
-    this.service.getPost(this.id, this.currentUser?.token).subscribe({
+    const postDetailSub : Subscription = this.service.getPost(this.id, this.currentUser?.token).subscribe({
       next: (response) => {
         this.post = response;
         this.comments = this.post.comments;
@@ -52,6 +53,8 @@ export class PostDetailComponent implements OnInit {
         this.errorMessage = "Erreur : une erreur est survenue lors du chargement de l'article";
       },
     });
+
+    this.subscriptions.add(postDetailSub);
   }
 
   initForm() {
@@ -63,7 +66,7 @@ export class PostDetailComponent implements OnInit {
   onSubmit() {
     if (this.commentForm.valid) {
       this.isLoading = true;
-      this.service.addComment(this.id, this.commentForm.value,this.currentUser.token).subscribe({
+      const createCommentSub: Subscription = this.service.addComment(this.id, this.commentForm.value,this.currentUser.token).subscribe({
         next: (response) => {
           this.loadPostDetails(this.id, this.currentUser.token);
           this.initForm();
@@ -76,11 +79,17 @@ export class PostDetailComponent implements OnInit {
           this.isLoading = false;
         },
       });
+
+      this.subscriptions.add(createCommentSub);
     }
   }
 
   back() {
     this.router.navigate(['/dashboard']);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
 }

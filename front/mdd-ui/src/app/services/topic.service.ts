@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Subscription } from '../models/subscription';
+import { SubscriptionData } from '../models/subscription';
 import { Observable } from 'rxjs';
 import { Topic } from '../models/topic';
 
@@ -13,12 +13,12 @@ export class TopicService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getUserTopics(token?: string): Observable<Subscription[]> {
+  getUserTopics(token?: string): Observable<SubscriptionData[]> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
 
-    return this.httpClient.get<Subscription[]>(`${this.subscriptionPath}/user/all`, { headers: headers });
+    return this.httpClient.get<SubscriptionData[]>(`${this.subscriptionPath}/user/all`, { headers: headers });
   }
 
   unsubscribe(id?: number, token?: string) : Observable<Object> {

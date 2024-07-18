@@ -1,22 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { LoginResponse } from '../../models/auth/login-response';
 import { DashboardService } from '../../services/dashboard.service';
 import { Post } from '../../models/post';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
-export class DashboardComponent implements OnInit {
-  public currentUser!: LoginResponse;
-  public onError: boolean = false;
-  public isLoading: boolean = false;
-  public errorMessage: string = "";
-  public posts: Post[] = [];
-  public ascendingOrder: boolean = true;
+export class DashboardComponent implements OnInit, OnDestroy {
+  currentUser!: LoginResponse;
+  onError: boolean = false;
+  isLoading: boolean = false;
+  errorMessage: string = "";
+  posts: Post[] = [];
+  ascendingOrder: boolean = true;
+  postSubscription: Subscription = new Subscription();
 
   constructor(
     private authService: AuthService,
@@ -32,7 +34,7 @@ export class DashboardComponent implements OnInit {
   }
 
   loadUserPosts() {
-    this.service.getPosts(this.currentUser.token).subscribe({
+    this.postSubscription = this.service.getPosts(this.currentUser.token).subscribe({
       next: (response) => {
         this.posts = response.sort((a, b) => {
           const dateA = new Date(a.date);
@@ -54,7 +56,7 @@ export class DashboardComponent implements OnInit {
 
   reverseOrder() {
     this.ascendingOrder = !this.ascendingOrder;
-    
+
     if (this.ascendingOrder) {
       this.posts.sort((a, b) => {
         const dateA = new Date(a.date);
@@ -70,8 +72,12 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  onClickDetail(id:number) {
+  onClickDetail(id: number) {
     this.router.navigate(['detail', id]);
+  }
+
+  ngOnDestroy(): void {
+    this.postSubscription.unsubscribe();
   }
 
 }
