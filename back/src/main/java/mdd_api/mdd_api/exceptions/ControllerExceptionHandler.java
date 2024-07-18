@@ -7,6 +7,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
+import jakarta.persistence.EntityNotFoundException;
 
 @Order(2)
 @RestControllerAdvice
@@ -90,6 +93,38 @@ public class ControllerExceptionHandler {
 	 }
 
 	 
+	 @ExceptionHandler(Exception.class)
+	 public ResponseEntity<Object> handleGenericException(Exception ex) {
+	     Map<String, Object> errorMap = new HashMap<>();
+	     errorMap.put("message", "Unexpected error occurred: " + ex.getMessage());
+	     errorMap.put("status", HttpStatus.BAD_REQUEST.value());
+	     
+	     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMap);
+	 }
 	 
-
+	 @ExceptionHandler(AuthenticationException.class)
+	 public ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex) {
+	     Map<String, Object> errorMap = new HashMap<>();
+	     errorMap.put("message", "Invalid Credentials: " + ex.getMessage());
+	     errorMap.put("status", HttpStatus.BAD_REQUEST.value());
+	     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMap);
+	 }
+	 
+	 @ExceptionHandler(EntityNotFoundException.class)
+	 public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
+         Map<String, Object> errorMap = new HashMap<>();
+         errorMap.put("message", ex.getMessage());
+	     errorMap.put("status", HttpStatus.NOT_FOUND.value());
+         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMap);
+    }
+	 
+	 @ExceptionHandler(AccessDeniedException.class)
+	 public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex) {
+	     Map<String, Object> response = new HashMap<>();
+	     response.put("message", "Access denied: " + ex.getMessage());
+	     response.put("status", HttpStatus.FORBIDDEN.value());
+	     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+	 }
+	 
+	 
 }

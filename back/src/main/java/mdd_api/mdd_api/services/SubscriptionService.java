@@ -30,9 +30,7 @@ public class SubscriptionService {
 	}
 	
 	public void subscribe(String mail, Long topicId) {
-		
-        try {
-        	
+			
             User user = userRepository.findByMail(mail)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with mail: " + mail));
             
@@ -52,20 +50,10 @@ public class SubscriptionService {
             subscription.setTopic(topic);
             
             subscriptionRepository.save(subscription);
-            
-        }  catch (EntityNotFoundException e) {
-            throw new CustomException("Error during user subscription: " + e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (CustomException e) {
-            throw e; 
-        } catch (Exception e) {
-            throw new CustomException("Error during user subscription", HttpStatus.BAD_REQUEST);
-        }
     }
 	
 	public void unsubscribe(Long id, String mail) {
-		
-		try {
-		
+
 	        Subscription subscription = subscriptionRepository.findById(id)
 	        	  .orElseThrow(() -> new EntityNotFoundException("Subscription not found with id: " + id));
 	        
@@ -79,19 +67,9 @@ public class SubscriptionService {
             }
 	        
 	        subscriptionRepository.deleteById(id);
-			
-		} catch (EntityNotFoundException e) {
-            throw new CustomException("Error during user unsubscription: " + e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (AccessDeniedException e) {
-            throw new CustomException("Access denied: " + e.getMessage(), HttpStatus.FORBIDDEN);
-        } catch (Exception e) {
-            throw new CustomException("Error during user unsubscription: " + e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-		
 	}
 	
 	 public List<Subscription> getAllSubscriptionsByUserId(Long userId) {
-		 	
 		 List<Subscription> list = subscriptionRepository.findByUserId(userId);
 	     return list;
 	     
