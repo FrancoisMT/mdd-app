@@ -4,7 +4,7 @@ import { TopicService } from './topic.service';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Topic } from '../models/topic';
-import { Subscription } from '../models/subscription';
+import { SubscriptionData} from '../models/subscription';
 
 describe('TopicService', () => {
   let service: TopicService;
@@ -39,7 +39,7 @@ describe('TopicService', () => {
       title: "Topic1",
       description: "Description du topic 1"
     };
-    const apiResponse: Subscription[] = [
+    const apiResponse: SubscriptionData[] = [
       {
         id:1,
         topic: topic

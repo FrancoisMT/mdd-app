@@ -50,6 +50,7 @@ public class AuthServiceTest {
 	 private AuthService authService;
 	 
 	 public User user;
+	 public User user2;
 	 public LoginRequest loginRequest;
 	 	 
 	 @BeforeEach
@@ -61,6 +62,10 @@ public class AuthServiceTest {
 		 user.setName("testuser");
 		 user.setMail("user@test.fr");
 		 user.setPassword("password");
+		 
+		 user2 = new User();
+		 user2.setMail("test@live.fr");
+		 user2.setPassword("TestPwd_88");
 		 
 		 loginRequest = new LoginRequest();
 		 loginRequest.setEmail("user@test.fr");
@@ -107,13 +112,15 @@ public class AuthServiceTest {
 	 @Test
 	 public void testLogin_success() {
 		 
+
+		 
 		 // Arrange
 		 when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
 		 		.thenReturn(mock(Authentication.class));
 		 when(userRepository.findByMail(loginRequest.getEmail())).thenReturn(Optional.of(user));
 
 		 // Act
-		 User loggedInUser = authService.login(loginRequest);
+		 User loggedInUser = authService.login(user);
 
 		 // Assert
 		 assertEquals(user.getMail(), loggedInUser.getMail());
@@ -129,7 +136,7 @@ public class AuthServiceTest {
 
 	     // Act & Assert
 	     CustomException exception = assertThrows(CustomException.class, () -> {
-	            authService.login(loginRequest);
+	            authService.login(user2);
 	     });
 
 	     assertEquals("Invalid Credentials", exception.getMessage());
@@ -147,7 +154,7 @@ public class AuthServiceTest {
 
 	     // Act & Assert
 	     CustomException exception = assertThrows(CustomException.class, () -> {
-	            authService.login(loginRequest);
+	            authService.login(user2);
 	     });
 
 	     assertEquals("User not found", exception.getMessage());

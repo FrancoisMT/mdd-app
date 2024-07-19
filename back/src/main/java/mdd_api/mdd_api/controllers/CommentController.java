@@ -1,13 +1,11 @@
 package mdd_api.mdd_api.controllers;
 
-import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,9 +19,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import mdd_api.mdd_api.dto.CommentRequestDto;
-import mdd_api.mdd_api.dto.CommentResponseDto;
+import mdd_api.mdd_api.entities.Comment;
+import mdd_api.mdd_api.entities.Post;
+import mdd_api.mdd_api.entities.User;
+import mdd_api.mdd_api.mapper.CommentMapper;
 import mdd_api.mdd_api.payload.response.MessageResponseHandler;
 import mdd_api.mdd_api.services.CommentService;
+import mdd_api.mdd_api.services.PostService;
+import mdd_api.mdd_api.services.UserService;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -31,9 +34,13 @@ import mdd_api.mdd_api.services.CommentService;
 public class CommentController {
 
 	public CommentService commentService;
+	public UserService userService;
+	public PostService postService;
 	
-	public CommentController(CommentService commentService) {
+	public CommentController(CommentService commentService, UserService userService, PostService postService) {
 		this.commentService = commentService;
+		this.userService = userService;
+		this.postService = postService;
 	}
 	
 	@PostMapping("/{postId}/create")
@@ -50,29 +57,16 @@ public class CommentController {
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails currentUser = (UserDetails) authentication.getPrincipal();
-        String username = currentUser.getUsername();
+        String mail = currentUser.getUsername();
         
-        commentService.create(username, request, postId);
+        User user = userService.getUser(mail);
+        Post post = postService.getById(postId);
+        
+        Comment comment = CommentMapper.toEntity(request, user, post);
+       
+        commentService.create(comment);
 		
         return ResponseEntity.ok(new MessageResponseHandler("Comment successfully added"));		
-
-	}
-	
-	@GetMapping("/{postId}/all")
-	@Operation(summary = "Get one post' comments", description = "This operation retrieved all comments associated wuith a specific post.")
-	 @ApiResponses(value = {
-	     @ApiResponse(responseCode = "200", description = "List successfully retrieved", 
-	    		 content = @Content(mediaType = "application/json",
-               schema = @Schema(implementation = MessageResponseHandler.class))),
-	     @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
-	     @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
-	     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
-	})
-	public ResponseEntity<List<CommentResponseDto>> getAll(@PathVariable Long postId) {
-		
-		List<CommentResponseDto> list = commentService.getAll(postId);
-		
-		return ResponseEntity.ok().body(list);	
 	}
 	
 }

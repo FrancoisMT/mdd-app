@@ -28,7 +28,6 @@ public class TopicController {
 		this.service= service;	
 	}
 	
-	
 	@GetMapping("/list")
 	@Operation(summary = "Retrieve topic list")
 	@ApiResponses(value = { 

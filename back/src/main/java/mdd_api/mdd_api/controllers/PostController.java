@@ -1,6 +1,7 @@
 package mdd_api.mdd_api.controllers;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,20 +21,38 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import mdd_api.mdd_api.dto.CommentResponseDto;
 import mdd_api.mdd_api.dto.PostDto;
 import mdd_api.mdd_api.dto.PostResponseDto;
+import mdd_api.mdd_api.dto.UserDto;
+import mdd_api.mdd_api.entities.Comment;
+import mdd_api.mdd_api.entities.Post;
+import mdd_api.mdd_api.entities.Topic;
+import mdd_api.mdd_api.entities.User;
+import mdd_api.mdd_api.mapper.CommentMapper;
+import mdd_api.mdd_api.mapper.PostMapper;
+import mdd_api.mdd_api.mapper.UserMapper;
 import mdd_api.mdd_api.payload.response.MessageResponseHandler;
+import mdd_api.mdd_api.services.CommentService;
 import mdd_api.mdd_api.services.PostService;
+import mdd_api.mdd_api.services.TopicService;
+import mdd_api.mdd_api.services.UserService;
 
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/posts")
 public class PostController {
 	
-	public PostService service;
+	public UserService userService;
+	public PostService postService;
+	public CommentService commentService;
+	public TopicService topicService;
 	
-	public PostController(PostService service) {
-		this.service = service;
+	public PostController(PostService postService, CommentService commentService, TopicService topicService, UserService userService) {
+		this.postService = postService;
+		this.commentService = commentService;
+		this.topicService = topicService;
+		this.userService = userService;
 	}
 
 	@PostMapping("/create")
@@ -51,11 +70,16 @@ public class PostController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails currentUser = (UserDetails) authentication.getPrincipal();
         String mail = currentUser.getUsername();
+        
+        User user = userService.getUser(mail);
+        
+        Long topicId = request.getTopicId();
+        Topic topic = topicService.getById(topicId);
+        Post post = PostMapper.toEntity(request, user, topic);
               
-        service.create(mail, request);
+        postService.create(post);
 		
         return ResponseEntity.ok(new MessageResponseHandler("Article créé avec succès !"));		
-
 	}
 	
 	@GetMapping("/all")
@@ -74,12 +98,19 @@ public class PostController {
         UserDetails currentUser = (UserDetails) authentication.getPrincipal();
         String username = currentUser.getUsername();
         
-        List<PostResponseDto> list = service.getAll(username);
+        List<Post> posts = postService.getAll(username);
         
-        return ResponseEntity.ok().body(list);
-		
+        List<PostResponseDto> postResponseDtos = posts.stream()
+                .map(post -> {
+                    Topic topic = post.getTopic();
+                    User user = post.getUser();
+                    UserDto userDto = UserMapper.toDto(user);
+                    return PostMapper.toResponseDto(post, topic, userDto, null);
+                })
+                .collect(Collectors.toList());
+        
+        return ResponseEntity.ok().body(postResponseDtos);
 	}
-	
 	
 	@GetMapping("/{id}")
 	@Operation(summary = "Get a post by id")
@@ -93,12 +124,19 @@ public class PostController {
 	})
 	public ResponseEntity<PostResponseDto> getById(@PathVariable Long id) {
 				
-		PostResponseDto post = service.getById(id);
+		Post post = postService.getById(id);
+		Topic topic = post.getTopic();
+		User user = post.getUser();
+		UserDto userDto = UserMapper.toDto(user);
 		
-		return ResponseEntity.ok().body(post);
+		List<Comment> comments = commentService.getAll(id);
+		List<CommentResponseDto> commentsDtoList = CommentMapper.toDtoList(comments);
 		
+		PostResponseDto postResponseDto = PostMapper.toResponseDto(post, topic, userDto, commentsDtoList);
+		
+		return ResponseEntity.ok().body(postResponseDto);
 	}
 	
-	
+
 	
 }

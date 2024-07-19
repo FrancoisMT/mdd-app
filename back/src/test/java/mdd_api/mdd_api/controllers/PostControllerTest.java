@@ -1,8 +1,5 @@
 package mdd_api.mdd_api.controllers;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,9 +13,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -54,8 +48,6 @@ public class PostControllerTest {
         request.setTopicId(2L);
         request.setUserId(1L);
         
-        doNothing().when(postService).create("user@example.com", request);
-
         mockMvc.perform(post("/posts/create")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(request)))
@@ -66,8 +58,8 @@ public class PostControllerTest {
     @Test
     @WithMockUser
     public void testGetAll_success() throws Exception {
-    	
-    	UserDto user = new UserDto();
+
+        UserDto user = new UserDto();
     	user.setId(1L);
     	user.setUsername("Test");
     	
@@ -89,11 +81,7 @@ public class PostControllerTest {
         post2.setDescription("Description post 2");
         post2.setTopic(topic);
         post2.setUser(user);
-
-        List<PostResponseDto> posts = Arrays.asList(post1, post2);
-
-        when(postService.getAll("user@example.com")).thenReturn(posts);
-
+       
         mockMvc.perform(get("/posts/all")
                 .contentType("application/json"))
                 .andExpect(status().isOk());

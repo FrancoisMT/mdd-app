@@ -72,10 +72,13 @@ public class AuthController {
 	        @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
 	 })
 	 public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-				 
-		 User authenticatedUser = authService.login(loginRequest);	
+		 User user = new User();
+		 user.setMail(loginRequest.getEmail());
+		 user.setPassword(loginRequest.getPassword());
+		 
+		 User authenticatedUser = authService.login(user);	
 		 String jwtToken = jwtService.generateToken(authenticatedUser);
-
+		 
 		 return ResponseEntity.ok(new JwtResponse(
 				 authenticatedUser.getId(),
 				 authenticatedUser.getName(),

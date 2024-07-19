@@ -80,7 +80,7 @@ public class AuthControllerTest {
        String mockJwtToken = "mockJwtToken";
 
        // Mocking the behavior of AuthService and JWTService
-       when(authService.login(any(LoginRequest.class))).thenReturn(mockUser);
+       when(authService.login(any(User.class))).thenReturn(mockUser);
        when(jwtService.generateToken(any(User.class))).thenReturn(mockJwtToken);
        
        mockMvc.perform(post("/auth/login")
