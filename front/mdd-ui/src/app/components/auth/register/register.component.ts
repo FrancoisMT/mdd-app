@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { SignupResponse } from '../../../models/auth/signup-response';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
@@ -50,16 +51,16 @@ export class RegisterComponent implements OnInit, OnDestroy {
           });
           this.router.navigate(['/login']);
         },
-        error: (error: any) => {
+        error: (error: unknown) => {
           this.isLoading = false;
           this.handleError(error);
-        },
+        }
       });
     }
   }
 
   passwordValidator(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: boolean  } | null => {
+    return (control: AbstractControl): { [key: string]: boolean } | null => {
       const value = control.value;
 
       if (!value) {
@@ -73,12 +74,15 @@ export class RegisterComponent implements OnInit, OnDestroy {
     };
   }
 
-  private handleError(error: any): void {
-
-    if (error.status === 409) {
-      this.errorMessage = 'Erreur : un mail est déjà associé à ce compte.';
+  private handleError(error: unknown): void {
+    if (error instanceof HttpErrorResponse) {
+      if (error.status === 409) {
+        this.errorMessage = 'Erreur : un mail est déjà associé à ce compte.';
+      } else {
+        this.errorMessage = "Erreur : une erreur est survenue lors de l'inscription de l'utilusateur.";
+      }
     } else {
-      this.errorMessage = "Erreur : une erreur est survenue lors de l'inscription de l'utilusateur.";
+      this.errorMessage = "Erreur : une erreur inattendue est survenue. Veuillez réessayer plus tard.";
     }
 
     this.onError = true;

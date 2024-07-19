@@ -1,4 +1,5 @@
 import { Topic } from "./topic";
+import { Comment } from "./comment";
 
 export class Post {
     id!: number;
