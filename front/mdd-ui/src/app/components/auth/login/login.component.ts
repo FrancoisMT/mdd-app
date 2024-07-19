@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.router.navigate(['/dashboard']);
           this.isLoading = false;
         },
-        error: (error: any) => {
+        error: (error: unknown) => {
           this.handleError(error);
           this.isLoading = false;
         },
@@ -49,14 +49,17 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
-  private handleError(error: any): void {
+  handleError(error: unknown): void {
     if (error instanceof HttpErrorResponse) {
-      if (error.status === 404) {
-        this.errorMessage = 'Erreur : aucun compte n\'est associé à cet email. Veuillez créer un compte.';
-      } else if (error.status === 400) {
-        this.errorMessage = 'Erreur : identifiants invalides.';
-      } else {
-        this.errorMessage = 'Une erreur est survenue. Veuillez réessayer ultérieurement.';
+      switch (error.status) {
+        case 404:
+          this.errorMessage = 'Erreur : aucun compte n\'est associé à cet email. Veuillez créer un compte.';
+          break;
+        case 400:
+          this.errorMessage = 'Erreur : identifiants invalides.';
+          break;
+        default:
+          this.errorMessage = 'Une erreur est survenue. Veuillez réessayer ultérieurement.';
       }
       console.error('Login failed', error);
     } else if (typeof error === 'string') {

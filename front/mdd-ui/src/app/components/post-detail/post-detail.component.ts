@@ -4,6 +4,7 @@ import { AuthService } from '../../services/auth.service';
 import { DashboardService } from '../../services/dashboard.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PostDetail } from '../../models/post';
+import { Comment } from '../../models/comment';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
@@ -19,7 +20,7 @@ export class PostDetailComponent implements OnInit, OnDestroy {
   errorMessage: string = "";
   id!: number;
   post!: PostDetail;
-  comments: any[] = [];
+  comments: Comment[] = [];
   commentForm!: FormGroup;
   subscriptions: Subscription = new Subscription();
 
@@ -47,7 +48,8 @@ export class PostDetailComponent implements OnInit, OnDestroy {
         this.post = response;
         this.comments = this.post.comments;
       },
-      error: (error: any) => {
+      error: (error: unknown) => {
+        console.error(error);
         this.isLoading = false;
         this.onError = true;
         this.errorMessage = "Erreur : une erreur est survenue lors du chargement de l'article";
@@ -72,7 +74,8 @@ export class PostDetailComponent implements OnInit, OnDestroy {
           this.initForm();
           this.isLoading = false;
         },
-        error: (error: any) => {
+        error: (error: unknown) => {
+          console.error(error);
           this.isLoading = false;
           this.onError = true;
           this.errorMessage = "Erreur : une erreur est survenue lors de l'ajout du commentaire";

@@ -48,7 +48,8 @@ export class TopicsComponent implements OnInit, OnDestroy {
         this.userTopics = results.userTopics.map(subscription => subscription.topic);
         this.isLoading = false;
       },
-      error: (error: any) => {
+      error: (error) => {
+        console.error(error);
         this.isLoading = false;
         this.onError = true;
         this.errorMessage = "Erreur : une erreur est survenue lors de la récupération des thèmes et abonnements";
@@ -73,7 +74,8 @@ export class TopicsComponent implements OnInit, OnDestroy {
           verticalPosition: 'top',
         });
       },
-      error: (error: any) => {
+      error: (error: unknown) => {
+        console.error(error);
         this.isLoading = false;
         this.onError = true;
         this.errorMessage = "Erreur : une erreur est survenue lors de l'abonnement au thème";

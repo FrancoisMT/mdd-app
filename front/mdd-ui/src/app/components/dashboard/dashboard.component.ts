@@ -42,7 +42,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
           return dateB.getTime() - dateA.getTime();
         });
       },
-      error: (error: any) => {
+      error: (error: unknown) => {
+        console.error(error);
         this.isLoading = false;
         this.onError = true;
         this.errorMessage = "Erreur : une erreur est survenue lors de la récupération de votre fil d'actualité";

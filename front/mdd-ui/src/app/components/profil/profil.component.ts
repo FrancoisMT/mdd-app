@@ -7,6 +7,7 @@ import { TopicService } from '../../services/topic.service';
 import { SubscriptionData} from '../../models/subscription';
 import { Subscription } from 'rxjs';
 import { MessageResponse } from '../../models/message-response';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-profil',
@@ -59,7 +60,7 @@ export class ProfilComponent implements OnInit, OnDestroy {
             verticalPosition: 'top', 
           });
         },
-        error: (error: any) => {
+        error: (error) => {
           this.isLoading = false;
           this.handleError(error);
         },
@@ -73,11 +74,11 @@ export class ProfilComponent implements OnInit, OnDestroy {
   loadUserSubscription(): void {
     const userSub : Subscription = this.topicService.getUserTopics(this.currentUser?.token).subscribe({
       next: (response: SubscriptionData[]) => {
-        console.log(response);
         this.isLoading = false;
         this.userTopics = response;
       },
-      error: (error: any) => {
+      error: (error) => {
+        console.error(error);
         this.isLoading = false;
         this.onError = true;
         this.errorMessage = "Erreur : une erreur est survenue lors de la récupération des abonnements"
@@ -101,7 +102,8 @@ export class ProfilComponent implements OnInit, OnDestroy {
         this.loadUserSubscription();
 
       },
-      error: (error: any) => {
+      error: (error: unknown) => {
+        console.error(error);
         this.isLoading = false;
         this.onError = true;
         this.errorMessage = "Erreur : une erreur est survenue lors du désabonnement"
@@ -112,7 +114,7 @@ export class ProfilComponent implements OnInit, OnDestroy {
   }
 
   passwordValidator(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
+    return (control: AbstractControl): { [key: string]: boolean } | null => {
       const value = control.value;
       if (!value) {
         return { 'passwordInvalid': true };
@@ -125,7 +127,7 @@ export class ProfilComponent implements OnInit, OnDestroy {
     };
   }
 
-  public handleError(error: any): void {
+  public handleError(error:any): void {
 
     if (error.status === 409) {
       this.errorMessage = 'Erreur : un mail est déjà associé à ce compte.';

@@ -56,7 +56,8 @@ export class CreatePostComponent implements OnInit, OnDestroy {
         next: (response: Topic[]) => {
           this.topics = response;
         },
-        error: (error: any) => {
+        error: (error) => {
+          console.error(error);
           this.isLoading = false;
           this.onError = true;
           this.errorMessage = "Erreur : une erreur est survenue lors de la récupération des données";
@@ -80,7 +81,8 @@ export class CreatePostComponent implements OnInit, OnDestroy {
 
           this.router.navigate(["/dashboard"]);
         },
-        error: (error: any) => {
+        error: (error: unknown) => {
+          console.error(error);
           this.isLoading = false;
           this.onError = true;
           this.errorMessage = "Une erreur est survenue au moment de la publication de l'article."

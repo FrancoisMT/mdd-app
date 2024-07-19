@@ -112,6 +112,7 @@ public class ControllerExceptionHandler {
 	 
 	 @ExceptionHandler(EntityNotFoundException.class)
 	 public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
+		 System.out.println(ex.getMessage());
          Map<String, Object> errorMap = new HashMap<>();
          errorMap.put("message", ex.getMessage());
 	     errorMap.put("status", HttpStatus.NOT_FOUND.value());
