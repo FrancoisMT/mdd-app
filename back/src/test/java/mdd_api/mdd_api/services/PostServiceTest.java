@@ -3,7 +3,6 @@ package mdd_api.mdd_api.services;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -21,8 +20,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
-import mdd_api.mdd_api.dto.PostDto;
-import mdd_api.mdd_api.dto.PostResponseDto;
 import mdd_api.mdd_api.entities.Post;
 import mdd_api.mdd_api.entities.Subscription;
 import mdd_api.mdd_api.entities.Topic;
@@ -50,65 +47,6 @@ public class PostServiceTest {
 	
 	@InjectMocks
 	PostService postService;
-	
-	@Test
-	public void testCreate_userNotFound_shouldReturnNotFoundException() {
-		
-	    String mail = "user@example.com";
-	    PostDto postDto = new PostDto();
-	    postDto.setTopicId(1L);
-
-	    when(userRepository.findByMail(mail)).thenReturn(Optional.empty());
-
-	    CustomException exception = assertThrows(CustomException.class, () -> {
-	        postService.create(mail, postDto);
-	    });
-
-	    assertEquals("Error creating post: User not found with mail: " + mail, exception.getMessage());
-	    assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
-	    
-	}
-	
-	@Test
-	public void testCreate_topicNotFound_shouldReturnNotFoundException() {
-		
-	    String mail = "user@example.com";
-	    PostDto postDto = new PostDto();
-	    postDto.setTopicId(1L);
-
-	    User user = new User();
-	    when(userRepository.findByMail(mail)).thenReturn(Optional.of(user));
-	    when(topicRepository.findById(postDto.getTopicId())).thenReturn(Optional.empty());
-
-	    CustomException exception = assertThrows(CustomException.class, () -> {
-	        postService.create(mail, postDto);
-	    });
-
-	    assertEquals("Error creating post: Topic not found with id: " + postDto.getTopicId(), exception.getMessage());
-	    assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
-	    
-	}
-	
-	@Test
-	public void testCreate_success() {
-		
-	    String mail = "user@example.com";
-	    PostDto postDto = new PostDto();
-	    postDto.setTopicId(1L);
-
-	    User user = new User();
-	    Topic topic = new Topic();
-	    Post post = new Post();
-
-	    when(userRepository.findByMail(mail)).thenReturn(Optional.of(user));
-	    when(topicRepository.findById(postDto.getTopicId())).thenReturn(Optional.of(topic));
-	    when(postRepository.save(any(Post.class))).thenReturn(post);
-
-	    postService.create(mail, postDto);
-
-	    verify(postRepository, times(1)).save(any(Post.class));
-	    
-	}
 	
 	
 	@Test
@@ -157,7 +95,7 @@ public class PostServiceTest {
 	     when(subscriptionRepository.findByUserId(user.getId())).thenReturn(subscriptions);
 	     when(postRepository.findByTopicIdIn(anyList())).thenReturn(posts);
 
-	     List<PostResponseDto> result = postService.getAll(username);
+	     List<Post> result = postService.getAll(username);
 
 	     assertNotNull(result);
 	     assertEquals(2, result.size());

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import mdd_api.mdd_api.entities.User;
 import mdd_api.mdd_api.exceptions.CustomException;
-import mdd_api.mdd_api.payload.request.LoginRequest;
 import mdd_api.mdd_api.repositories.UserRepository;
 
 @Service
@@ -32,18 +31,17 @@ public class AuthService {
 		userRepository.save(user);
 	 }
 	 
-	 public User login(LoginRequest request) {
-		 User user = new User();
-		 user.setMail(request.getEmail());
-				
-		 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));			
+	 public User login(User user) {
+			
+		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getMail(), user.getPassword()));			
 						
-		 return userRepository.findByMail(user.getMail())
+		return userRepository.findByMail(user.getMail())
 					.orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));			 
 	 }
 	 
 	 public User updateCredentials(User updatedUser) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			 
 	 	if (authentication == null || !authentication.isAuthenticated()) {
             throw new CustomException("User not authenticated", HttpStatus.BAD_REQUEST);

@@ -38,7 +38,7 @@ public class ControllerExceptionHandler {
 	 @ExceptionHandler(UsernameNotFoundException.class)
 	    public ResponseEntity<String> handleUsernameNotFoundException(UsernameNotFoundException ex) {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-	                             .body("User not found: " + ex.getMessage());
+	                         .body("User not found: " + ex.getMessage());
 	}
 	 
 	 @ExceptionHandler(MissingServletRequestPartException.class)

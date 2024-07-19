@@ -73,6 +73,7 @@ export class ProfilComponent implements OnInit, OnDestroy {
   loadUserSubscription(): void {
     const userSub : Subscription = this.topicService.getUserTopics(this.currentUser?.token).subscribe({
       next: (response: SubscriptionData[]) => {
+        console.log(response);
         this.isLoading = false;
         this.userTopics = response;
       },
